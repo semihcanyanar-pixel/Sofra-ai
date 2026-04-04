@@ -59,7 +59,7 @@ flex-shrink:0;
 .sb-btn{background:#C9A84C;color:#0F0E0C;border:none;border-radius:7px;padding:6px 11px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
 .sb-btn:active{background:#E8C96A}
 
-.sb-filters{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.07);overflow-y:auto}
+.sb-filters{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.07);overflow-y:auto;max-height:280px}
 .sb-filters::-webkit-scrollbar{display:none}
 .fl-label{font-size:9px;letter-spacing:2px;color:rgba(237,232,223,.3);text-transform:uppercase;margin-bottom:6px;padding-left:6px}
 .fl-btn{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:9px;width:100%;padding:9px 10px;border-radius:9px;font-size:13px;color:rgba(237,232,223,.45);cursor:pointer;border:none;background:transparent;text-align:left;transition:all .15s;font-family:‘Inter’,sans-serif}
@@ -67,12 +67,12 @@ flex-shrink:0;
 .fl-btn.on{background:rgba(201,168,76,.12);color:#C9A84C}
 .fl-icon{width:18px;text-align:center}
 
-.sb-ai{margin:12px;border-radius:13px;background:linear-gradient(150deg,#1E1A14,#2A2318);border:1px solid rgba(201,168,76,.18);padding:14px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:9px;overflow:hidden;flex:1;-webkit-flex:1;min-height:0}
+.sb-ai{margin:12px;border-radius:13px;background:linear-gradient(150deg,#1E1A14,#2A2318);border:1px solid rgba(201,168,76,.18);padding:14px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:9px;flex:1;-webkit-flex:1;min-height:120px;overflow:hidden}
 .ai-head{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px}
 .ai-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#C9A84C,#C4622D);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:13px;flex-shrink:0}
 .ai-ttl{font-size:11px;font-weight:600;color:#C9A84C}
 .ai-sub{font-size:10px;color:rgba(237,232,223,.35)}
-.ai-txt{font-size:12px;color:rgba(237,232,223,.72);line-height:1.7;overflow-y:auto;flex:1;-webkit-flex:1}
+.ai-txt{font-size:12px;color:rgba(237,232,223,.82);line-height:1.7;overflow-y:auto;flex:1;-webkit-flex:1;min-height:0;word-break:break-word}
 .ai-txt::-webkit-scrollbar{display:none}
 
 .sb-nav{padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.07);display:-webkit-flex;display:flex;gap:3px;flex-shrink:0;-webkit-flex-shrink:0}
@@ -126,7 +126,7 @@ flex-shrink:0;
 .c-open{font-size:10px;font-weight:500;color:#4A9B6F}
 .c-closed{font-size:10px;font-weight:500;color:#C44A4A}
 
-.c-ai{margin-top:9px;padding:8px 10px;background:rgba(201,168,76,.06);border-left:2px solid #C9A84C;border-radius:0 7px 7px 0;font-size:11px;color:rgba(237,232,223,.65);line-height:1.5}
+.c-ai{margin-top:9px;padding:8px 10px;background:rgba(201,168,76,.08);border-left:2px solid #C9A84C;border-radius:0 7px 7px 0;font-size:11px;color:rgba(237,232,223,.85);line-height:1.5;min-height:32px}
 .c-ail{font-size:9px;color:#C9A84C;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
 
 .c-foot{padding:8px 12px 11px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between}
@@ -212,9 +212,10 @@ flex-shrink:0;
   <button class="fl-btn on" onclick="setFilter(this,'')"><span class="fl-icon">🍽</span>Tümü</button>
   <button class="fl-btn" onclick="setFilter(this,'Türk')"><span class="fl-icon">🫕</span>Türk Mutfağı</button>
   <button class="fl-btn" onclick="setFilter(this,'İtalyan')"><span class="fl-icon">🍕</span>İtalyan</button>
-  <button class="fl-btn" onclick="setFilter(this,'Asya')"><span class="fl-icon">🍱</span>Asya</button>
-  <button class="fl-btn" onclick="setFilter(this,'Vegan')"><span class="fl-icon">🌿</span>Vegan</button>
+  <button class="fl-btn" onclick="setFilter(this,'Asya mutfağı Çin Japon Kore Tayland')"><span class="fl-icon">🍱</span>Asya</button>
+  <button class="fl-btn" onclick="setFilter(this,'vegan vejetaryen sağlıklı organik')"><span class="fl-icon">🌿</span>Vegan</button>
   <button class="fl-btn" onclick="setFilter(this,'kahvaltı')"><span class="fl-icon">☕</span>Kahvaltı</button>
+  <button class="fl-btn" onclick="setFilter(this,'ekonomik uygun fiyat')"><span class="fl-icon">💰</span>Fiyat/Performans</button>
   <button class="fl-btn" onclick="setFilter(this,'fine dining')"><span class="fl-icon">✨</span>Fine Dining</button>
 </div>
 
@@ -399,18 +400,62 @@ function renderCards(places){
 }
 
 async function aiAnalyze(places,kw){
-  var list=places.slice(0,6).map(function(p,i){return (i+1)+'. '+p.name+' | Puan:'+(p.rating||'?')+' | '+(p.user_ratings_total||0)+' yorum | '+(p.opening_hours&&p.opening_hours.open_now?'Açık':'Kapalı');}).join('\n');
-  var prompt='Sen Sofra AI adlı uzman bir Türk restoran kritiğisin. Kullanıcı "'+(kw||'genel')+'" aradı.\n\nGerçek veriler:\n'+list+'\n\nGörevin:\n1. "genel" alanı: En iyi 1-2 restoranı öner. Lezzet profili, fiyat-performans dengesi ve müşteri memnuniyeti hakkında 2-3 paragraf yaz. Her paragraf en az 2 cümle olsun. Samimi, uzman ve Türkçe yaz.\n2. "notlar" alanı: Her restoran için menü fiyatlaması, lezzet kalitesi ve müşteri yorumları temasını içeren 25-35 kelimelik detaylı değerlendirme yaz.\n\nSadece JSON döndür, başka hiçbir şey yazma:\n{"genel":"paragraf1\\n\\nparagraf2\\n\\nparagraf3","notlar":["detaylı not 1","detaylı not 2","detaylı not 3","detaylı not 4","detaylı not 5","detaylı not 6"]}';
+  var list=places.slice(0,6).map(function(p,i){
+    return (i+1)+'. '+p.name+
+      ' | Google Puan:'+(p.rating||'?')+'/5'+
+      ' | Yorum:'+(p.user_ratings_total||0)+
+      ' | '+(p.opening_hours&&p.opening_hours.open_now?'Acik':'Kapali')+
+      ' | Fiyat:'+(p.price_level?'TL'.repeat(p.price_level):'Bilinmiyor')+
+      ' | '+(p.vicinity||'');
+  }).join('\n');
+
+  var sysPrompt='Sen Sofra AI adli uzman bir Turk restoran kritigi ve yemek yazarisin.'
+    +' Zomato Turkiye, TripAdvisor Turkiye ve Google Maps yorumlarindan edindign bilgileri sentezleyerek derin analiz yapiyorsun.'
+    +' Kullanici "'+( kw||'genel restoran')+'" aradı.'
+    +'\n\nGoogle Maps gercek verileri:\n'+list
+    +'\n\nGorevler:'
+    +'\n1. GENEL ANALIZ (genel alani): 3 paragraf yaz.'
+    +'\nParagraf 1: Zomato/TripAdvisor/Google yorumlarindan derlenen lezzet profili ve yemek kalitesi degerlendirmesi.'
+    +'\nParagraf 2: Menu fiyatlamasi, porsiyonlar ve fiyat-performans dengesi analizi.'
+    +'\nParagraf 3: Musteri memnuniyeti, atmosfer ve genel oneri.'
+    +'\nHer paragraf en az 2 cumle. Akici ve uzman Turkcesi kullan.'
+    +'\n2. KART NOTLARI (notlar alani): Her restoran icin 20-25 kelime. Lezzet+fiyat+musteri yorumu icersin.'
+    +'\n\nSADECE asagidaki formatta gecerli JSON dondur, baska hicbir sey yazma:'
+    +'\n{"genel":"P1 metni\\n\\nP2 metni\\n\\nP3 metni","notlar":["not0","not1","not2","not3","not4","not5"]}';
+
   try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CONFIG.CL,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':CONFIG.CL,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1500,
+        messages:[{role:'user',content:sysPrompt}]
+      })
+    });
     var d=await res.json();
-    var j=JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
-    document.getElementById('aiTxt').innerHTML=j.genel.replace(/\n\n/g,'<br><br>');
-    document.getElementById('aiSub').textContent='Claude Sonnet · '+places.length+' mekan';
-    j.notlar.forEach(function(n,i){var el=document.getElementById('n'+i);if(el)el.textContent=n;});
+    if(!d.content||!d.content[0]){throw new Error('empty');}
+    var raw=d.content[0].text.replace(/```json|```/g,'').trim();
+    var j=JSON.parse(raw);
+    if(j.genel){
+      document.getElementById('aiTxt').innerHTML=j.genel.replace(/\n\n/g,'<br><br>');
+      document.getElementById('aiSub').textContent='Claude Sonnet · Zomato & TripAdvisor & Google · '+places.length+' mekan';
+    }
+    if(j.notlar&&Array.isArray(j.notlar)){
+      j.notlar.forEach(function(n,i){var el=document.getElementById('n'+i);if(el&&n)el.textContent=n;});
+    }
   }catch(e){
-    document.getElementById('aiTxt').textContent='Analiz tamamlandı.';
-    places.forEach(function(p,i){var el=document.getElementById('n'+i);if(el)el.textContent=(p.rating||'?')+' puan · '+(p.user_ratings_total||0)+' yorum';});
+    console.error('AI:',e);
+    document.getElementById('aiTxt').innerHTML='<span style="color:rgba(237,232,223,.5);font-size:11px">Detaylı analiz yüklenemedi.</span>';
+    places.forEach(function(p,i){
+      var el=document.getElementById('n'+i);
+      if(el){el.textContent=(p.rating?'⭐'+p.rating+'/5':'')+' · '+(p.user_ratings_total||0)+' yorum'+(p.price_level?' · '+'₺'.repeat(p.price_level):'');}
+    });
   }
 }
 
