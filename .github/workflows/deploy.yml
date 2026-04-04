@@ -9,17 +9,27 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pages: write
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Inject API Keys
+      - name: Inject Keys
+        env:
+          GM: ${{ secrets.GOOGLE_MAPS_KEY }}
+          CL: ${{ secrets.ANTHROPIC_KEY }}
         run: |
-          sed -i "s|localStorage.getItem('s_gm')||'|'${{ secrets.GOOGLE_MAPS_KEY }}'|g" index.html
-          sed -i "s|localStorage.getItem('s_cl')||'|'${{ secrets.ANTHROPIC_KEY }}'|g" index.html
+          python3 - <<'EOF'
+          import os
+          with open('index.html', 'r') as f:
+              html = f.read()
+          html = html.replace("localStorage.getItem('s_gm')||''", f"'{os.environ['GM']}'")
+          html = html.replace("localStorage.getItem('s_cl')||''", f"'{os.environ['CL']}'")
+          with open('index.html', 'w') as f:
+              f.write(html)
+          EOF
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
