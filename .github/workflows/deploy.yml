@@ -14,17 +14,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Inject Keys
+      - name: Inject Google Maps Key
         env:
           GM: ${{ secrets.GOOGLE_MAPS_KEY }}
-          CL: ${{ secrets.ANTHROPIC_KEY }}
         run: |
           python3 - <<'EOF'
           import os
           with open('index.html', 'r') as f:
               html = f.read()
           html = html.replace("localStorage.getItem('s_gm')||''", f"'{os.environ['GM']}'")
-          html = html.replace("localStorage.getItem('s_cl')||''", f"'{os.environ['CL']}'")
           with open('index.html', 'w') as f:
               f.write(html)
           EOF
