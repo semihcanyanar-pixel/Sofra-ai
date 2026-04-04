@@ -1,0 +1,26 @@
+name: Deploy Sofra AI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inject API Keys
+        run: |
+          sed -i "s|localStorage.getItem('s_gm')||'|'${{ secrets.GOOGLE_MAPS_KEY }}'|g" index.html
+          sed -i "s|localStorage.getItem('s_cl')||'|'${{ secrets.ANTHROPIC_KEY }}'|g" index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
