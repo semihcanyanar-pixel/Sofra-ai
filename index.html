@@ -5,523 +5,404 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Sofra AI</title>
-
-<!-- PWA: Ana Ekrana Ekle -->
-
-<link rel="manifest" href="manifest.json">
-
-<!-- iOS Safari PWA -->
-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sofra AI">
-<link rel="apple-touch-icon" href="icon-512.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
-<link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
-<link rel="apple-touch-startup-image" href="splash-ipad-pro.png"
-  media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)">
-
-<!-- Android / genel -->
-
-<meta name="theme-color" content="#1C1916">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="application-name" content="Sofra AI">
-<meta name="description" content="Yapay Zeka Destekli Akıllı Restoran Keşfi">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0F0E0C">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --cream: #FAF7F2;
-    --warm-white: #FFFDF9;
-    --rust: #C4622D;
-    --rust-light: #E8845A;
-    --rust-dark: #9B4520;
-    --charcoal: #1C1916;
-    --gray: #6B6560;
-    --gray-light: #E8E4DE;
-    --gold: #D4A853;
-    --green: #3D7A5A;
-    --shadow: 0 8px 32px rgba(28,25,22,0.12);
-    --shadow-heavy: 0 20px 60px rgba(28,25,22,0.2);
-  }
-
-- { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-font-family: ‘DM Sans’, sans-serif;
-background: var(–cream);
-color: var(–charcoal);
-min-height: 100vh;
-min-height: 100dvh;
-overflow-x: hidden;
-padding-top: env(safe-area-inset-top);
-padding-left: env(safe-area-inset-left);
-padding-right: env(safe-area-inset-right);
+:root {
+  --bg: #0F0E0C;
+  --surface: #1A1814;
+  --surface2: #232018;
+  --border: rgba(255,255,255,0.07);
+  --gold: #C9A84C;
+  --gold-light: #E8C96A;
+  --cream: #F5F0E8;
+  --text: #EDE8DF;
+  --muted: rgba(237,232,223,0.45);
+  --accent: #C4622D;
+  --green: #4A9B6F;
+  --red: #C44A4A;
+  --sidebar-w: 280px;
+  --radius: 16px;
 }
+
+- { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html, body { height:100%; overflow:hidden; background:var(–bg); color:var(–text); font-family:‘Inter’,sans-serif; }
 
 /* ── SPLASH ── */
 #splash {
-position: fixed; inset: 0; z-index: 1000;
-background: var(–charcoal);
-display: flex; flex-direction: column;
-align-items: center; justify-content: center;
-transition: opacity .6s ease, transform .6s ease;
+position:fixed; inset:0; z-index:999;
+background:var(–bg);
+display:flex; flex-direction:column; align-items:center; justify-content:center;
+transition:opacity .8s ease;
 }
-#splash.hide { opacity: 0; transform: scale(1.04); pointer-events: none; }
+#splash.out { opacity:0; pointer-events:none; }
 .splash-logo {
-font-family: ‘Playfair Display’, serif;
-font-size: 52px; color: var(–cream);
-letter-spacing: -1px;
-animation: fadeUp .8s ease both;
+font-family:‘Cormorant Garamond’,serif;
+font-size:64px; font-weight:600; letter-spacing:-1px;
+color:var(–cream);
+animation:fadeUp .9s ease both;
 }
-.splash-logo span { color: var(–rust-light); font-style: italic; }
-.splash-sub {
-color: var(–gray); font-size: 14px; letter-spacing: 3px;
-text-transform: uppercase; margin-top: 12px;
-animation: fadeUp .8s .2s ease both;
+.splash-logo em { color:var(–gold); font-style:italic; }
+.splash-tagline {
+font-size:11px; letter-spacing:4px; text-transform:uppercase;
+color:var(–muted); margin-top:10px;
+animation:fadeUp .9s .2s ease both;
 }
-.splash-loader {
-width: 40px; height: 2px; background: var(–gray);
-border-radius: 2px; margin-top: 48px; overflow: hidden;
-animation: fadeUp .8s .4s ease both;
+.splash-bar {
+width:48px; height:1px; background:var(–border);
+margin-top:48px; position:relative; overflow:hidden;
+animation:fadeUp .9s .3s ease both;
 }
-.splash-loader::after {
-content: ‘’; display: block;
-height: 100%; width: 0; background: var(–rust-light);
-border-radius: 2px;
-animation: load 1.6s .6s ease forwards;
+.splash-bar::after {
+content:’’; position:absolute; inset:0; background:var(–gold);
+transform:translateX(-100%);
+animation:barFill 1.4s .6s ease forwards;
 }
-@keyframes load { to { width: 100%; } }
+@keyframes barFill { to { transform:translateX(0); } }
 @keyframes fadeUp {
-from { opacity: 0; transform: translateY(20px); }
-to   { opacity: 1; transform: translateY(0); }
+from { opacity:0; transform:translateY(16px); }
+to   { opacity:1; transform:translateY(0); }
 }
 
 /* ── LAYOUT ── */
-#app { display: none; flex-direction: column; height: 100dvh; }
-#app.visible { display: flex; }
+#app { display:none; height:100dvh; flex-direction:row; }
+#app.on { display:flex; }
 
-/* ── HEADER ── */
-header {
-background: var(–warm-white);
-border-bottom: 1px solid var(–gray-light);
-padding: 16px 20px 12px;
-position: sticky; top: 0; z-index: 100;
-}
-.header-top { display: flex; align-items: center; justify-content: space-between; }
-.logo { font-family: ‘Playfair Display’, serif; font-size: 26px; color: var(–charcoal); }
-.logo span { color: var(–rust); font-style: italic; }
-.header-loc {
-display: flex; align-items: center; gap: 6px;
-font-size: 12px; color: var(–gray); margin-top: 6px;
-cursor: pointer;
-}
-.header-loc svg { color: var(–rust); }
-.dot-live {
-width: 7px; height: 7px; border-radius: 50%; background: var(–green);
-animation: pulse-dot 2s infinite;
-box-shadow: 0 0 0 0 rgba(61,122,90,.4);
-}
-@keyframes pulse-dot {
-0%,100% { box-shadow: 0 0 0 0 rgba(61,122,90,.4); }
-50% { box-shadow: 0 0 0 6px rgba(61,122,90,0); }
+/* ── SIDEBAR ── */
+aside {
+width:var(–sidebar-w);
+background:var(–surface);
+border-right:1px solid var(–border);
+display:flex; flex-direction:column;
+flex-shrink:0;
+height:100dvh;
+padding-bottom:env(safe-area-inset-bottom);
 }
 
-/* ── SEARCH BAR ── */
-.search-wrap {
-padding: 14px 20px;
-background: var(–warm-white);
-border-bottom: 1px solid var(–gray-light);
+.sidebar-logo {
+padding:28px 24px 20px;
+border-bottom:1px solid var(–border);
 }
-.search-inner {
-display: flex; align-items: center; gap: 10px;
-background: var(–cream); border: 1.5px solid var(–gray-light);
-border-radius: 14px; padding: 10px 16px;
-transition: border-color .2s;
+.sidebar-logo h1 {
+font-family:‘Cormorant Garamond’,serif;
+font-size:28px; font-weight:600; color:var(–cream);
+letter-spacing:-0.5px;
 }
-.search-inner:focus-within { border-color: var(–rust); }
-.search-inner svg { color: var(–rust); flex-shrink: 0; }
-#searchInput {
-flex: 1; background: transparent; border: none; outline: none;
-font-family: ‘DM Sans’, sans-serif; font-size: 15px;
-color: var(–charcoal);
-}
-#searchInput::placeholder { color: var(–gray); }
-.search-ai-btn {
-background: var(–rust); color: white;
-border: none; border-radius: 10px;
-padding: 8px 14px; font-size: 13px; font-weight: 600;
-cursor: pointer; white-space: nowrap;
-transition: background .2s, transform .1s;
-}
-.search-ai-btn:active { transform: scale(.97); background: var(–rust-dark); }
+.sidebar-logo h1 em { color:var(–gold); font-style:italic; }
+.sidebar-logo p { font-size:11px; color:var(–muted); margin-top:3px; letter-spacing:0.5px; }
 
-/* ── FILTERS ── */
-.filters {
-display: flex; gap: 8px; padding: 12px 20px;
-overflow-x: auto; scrollbar-width: none;
-background: var(–warm-white);
+.sidebar-loc {
+padding:14px 24px;
+border-bottom:1px solid var(–border);
+display:flex; align-items:center; gap:8px;
+font-size:12px; color:var(–muted); cursor:pointer;
 }
-.filters::-webkit-scrollbar { display: none; }
-.filter-chip {
-padding: 7px 16px; border-radius: 20px; font-size: 13px;
-border: 1.5px solid var(–gray-light); background: white;
-color: var(–gray); cursor: pointer; white-space: nowrap;
-transition: all .2s;
-}
-.filter-chip.active {
-background: var(–rust); color: white; border-color: var(–rust);
-font-weight: 600;
-}
+.sidebar-loc svg { color:var(–gold); flex-shrink:0; }
+#locText { flex:1; }
 
-/* ── MAP PLACEHOLDER ── */
-.map-section {
-margin: 0 20px 16px;
-border-radius: 18px; overflow: hidden;
-box-shadow: var(–shadow);
-position: relative;
+/* Search */
+.sidebar-search {
+padding:16px;
+border-bottom:1px solid var(–border);
 }
-.map-placeholder {
-background: linear-gradient(135deg, #E8E0D5 0%, #D5CEC6 100%);
-height: 200px; position: relative;
-display: flex; align-items: center; justify-content: center;
+.search-box {
+display:flex; align-items:center; gap:8px;
+background:var(–surface2); border:1px solid var(–border);
+border-radius:12px; padding:10px 14px;
+transition:border-color .2s;
 }
-.map-grid {
-position: absolute; inset: 0;
-background-image:
-linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
-background-size: 40px 40px;
+.search-box:focus-within { border-color:var(–gold); }
+.search-box svg { color:var(–gold); flex-shrink:0; }
+.search-box input {
+flex:1; background:transparent; border:none; outline:none;
+font-family:‘Inter’,sans-serif; font-size:13px; color:var(–text);
 }
-.map-roads {
-position: absolute; inset: 0;
-background-image:
-linear-gradient(rgba(255,255,255,.6) 3px, transparent 3px),
-linear-gradient(90deg, rgba(255,255,255,.6) 3px, transparent 3px);
-background-size: 120px 120px;
+.search-box input::placeholder { color:var(–muted); }
+.search-btn {
+background:var(–gold); color:var(–bg);
+border:none; border-radius:8px;
+padding:6px 12px; font-size:11px; font-weight:600;
+cursor:pointer; white-space:nowrap; letter-spacing:0.3px;
+transition:background .2s;
 }
-.map-pin {
-position: absolute; transform: translateX(-50%);
-animation: pinBounce 2s ease-in-out infinite;
-}
-.map-pin svg { filter: drop-shadow(0 4px 8px rgba(0,0,0,.3)); }
-@keyframes pinBounce {
-0%,100% { transform: translateX(-50%) translateY(0); }
-50% { transform: translateX(-50%) translateY(-6px); }
-}
-.map-pin-1 { left: 30%; top: 30%; }
-.map-pin-2 { left: 55%; top: 45%; animation-delay: .5s; }
-.map-pin-3 { left: 70%; top: 25%; animation-delay: 1s; }
-.map-pin-4 { left: 45%; top: 65%; animation-delay: 1.5s; }
-.map-overlay {
-position: absolute; inset: 0;
-background: linear-gradient(to top, rgba(28,25,22,.4) 0%, transparent 60%);
-}
-.map-badge {
-position: absolute; bottom: 14px; left: 14px;
-background: white; border-radius: 10px;
-padding: 6px 12px; font-size: 12px; font-weight: 600;
-color: var(–charcoal); box-shadow: var(–shadow);
-display: flex; align-items: center; gap: 6px;
-}
-.map-badge-api {
-position: absolute; top: 12px; right: 12px;
-background: rgba(255,255,255,.9); backdrop-filter: blur(8px);
-border-radius: 8px; padding: 5px 10px;
-font-size: 11px; color: var(–gray); font-weight: 500;
-}
+.search-btn:active { background:var(–gold-light); }
 
-/* ── SCROLL CONTENT ── */
-#scrollContent { flex: 1; overflow-y: auto; padding-bottom: 100px; }
-#scrollContent::-webkit-scrollbar { display: none; }
+/* Filters */
+.sidebar-filters {
+padding:14px 16px;
+border-bottom:1px solid var(–border);
+display:flex; flex-direction:column; gap:4px;
+}
+.filter-label { font-size:10px; letter-spacing:2px; color:var(–muted); text-transform:uppercase; margin-bottom:6px; padding-left:4px; }
+.filter-btn {
+display:flex; align-items:center; gap:10px;
+padding:9px 12px; border-radius:10px;
+font-size:13px; color:var(–muted);
+cursor:pointer; transition:all .15s; border:none; background:transparent;
+text-align:left; width:100%;
+}
+.filter-btn:hover { background:var(–surface2); color:var(–text); }
+.filter-btn.active { background:rgba(201,168,76,0.12); color:var(–gold); }
+.filter-btn .fi { width:18px; text-align:center; }
 
-/* ── AI PANEL ── */
+/* AI Panel */
 .ai-panel {
-margin: 0 20px 20px;
-background: linear-gradient(135deg, var(–charcoal) 0%, #2D2520 100%);
-border-radius: 18px; padding: 20px;
-box-shadow: var(–shadow-heavy);
-display: none;
+flex:1; overflow:hidden;
+margin:12px; border-radius:var(–radius);
+background:linear-gradient(160deg, #1E1A14, #2A2318);
+border:1px solid rgba(201,168,76,0.2);
+padding:16px;
+display:flex; flex-direction:column; gap:10px;
 }
-.ai-panel.visible { display: block; animation: slideDown .4s ease; }
-@keyframes slideDown {
-from { opacity: 0; transform: translateY(-10px); }
-to { opacity: 1; transform: translateY(0); }
+.ai-panel-header { display:flex; align-items:center; gap:8px; }
+.ai-dot-icon {
+width:28px; height:28px; border-radius:8px;
+background:linear-gradient(135deg, var(–gold), var(–accent));
+display:flex; align-items:center; justify-content:center;
+font-size:14px; flex-shrink:0;
 }
-.ai-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.ai-icon {
-width: 32px; height: 32px; border-radius: 8px;
-background: var(–rust); display: flex; align-items: center; justify-content: center;
+.ai-panel-title { font-size:12px; font-weight:600; color:var(–gold); }
+.ai-panel-sub { font-size:10px; color:var(–muted); }
+.ai-panel-text { font-size:12px; color:rgba(237,232,223,0.75); line-height:1.65; flex:1; overflow-y:auto; }
+.ai-panel-text::-webkit-scrollbar { display:none; }
+.typing { display:flex; gap:3px; align-items:center; }
+.typing span {
+width:5px; height:5px; border-radius:50%; background:var(–gold);
+animation:blink 1.2s infinite;
 }
-.ai-title { color: white; font-weight: 600; font-size: 15px; }
-.ai-sub { color: rgba(255,255,255,.4); font-size: 12px; }
-.ai-content { color: rgba(255,255,255,.85); font-size: 14px; line-height: 1.7; }
-.ai-highlight { color: var(–gold); font-weight: 600; }
-.ai-typing { display: flex; gap: 4px; align-items: center; }
-.ai-dot {
-width: 6px; height: 6px; border-radius: 50%; background: var(–rust-light);
-animation: blink 1.2s infinite;
+.typing span:nth-child(2) { animation-delay:.2s; }
+.typing span:nth-child(3) { animation-delay:.4s; }
+@keyframes blink { 0%,80%,100%{opacity:.2;transform:scale(1)} 40%{opacity:1;transform:scale(1.3)} }
+
+/* Sidebar bottom nav */
+.sidebar-nav {
+padding:12px 16px;
+padding-bottom:calc(12px + env(safe-area-inset-bottom));
+border-top:1px solid var(–border);
+display:flex; gap:4px;
 }
-.ai-dot:nth-child(2) { animation-delay: .2s; }
-.ai-dot:nth-child(3) { animation-delay: .4s; }
-@keyframes blink {
-0%,80%,100% { opacity: .2; transform: scale(1); }
-40% { opacity: 1; transform: scale(1.3); }
+.nav-btn {
+flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+padding:8px 4px; border-radius:10px; cursor:pointer;
+border:none; background:transparent; color:var(–muted);
+transition:all .15s; font-size:9px; letter-spacing:0.3px;
+}
+.nav-btn:hover { background:var(–surface2); color:var(–text); }
+.nav-btn.active { color:var(–gold); }
+.nav-btn svg { width:18px; height:18px; }
+
+/* ── MAIN ── */
+main {
+flex:1; display:flex; flex-direction:column;
+overflow:hidden; background:var(–bg);
 }
 
-/* ── SECTION HEADER ── */
-.section-head {
-display: flex; align-items: baseline; justify-content: space-between;
-padding: 0 20px 14px;
+/* Map */
+#googleMap {
+height:260px; flex-shrink:0;
+border-bottom:1px solid var(–border);
 }
-.section-title {
-font-family: ‘Playfair Display’, serif;
-font-size: 22px; font-weight: 700;
+.map-loading {
+height:260px; flex-shrink:0;
+background:var(–surface);
+display:flex; align-items:center; justify-content:center;
+border-bottom:1px solid var(–border);
+color:var(–muted); font-size:13px; gap:8px;
 }
-.section-sub { font-size: 12px; color: var(–rust); font-weight: 600; cursor: pointer; }
 
-/* ── RESTAURANT CARDS ── */
-.cards-wrap { padding: 0 20px; display: flex; flex-direction: column; gap: 16px; }
+/* Cards area */
+.cards-area {
+flex:1; overflow-y:auto; padding:20px;
+display:grid; grid-template-columns:1fr 1fr;
+gap:14px; align-content:start;
+}
+.cards-area::-webkit-scrollbar { width:4px; }
+.cards-area::-webkit-scrollbar-track { background:transparent; }
+.cards-area::-webkit-scrollbar-thumb { background:var(–border); border-radius:2px; }
 
+.loading-state {
+grid-column:1/-1;
+display:flex; flex-direction:column; align-items:center; justify-content:center;
+padding:60px 20px; gap:14px; color:var(–muted); font-size:13px;
+}
+
+/* Cards */
 .card {
-background: white; border-radius: 20px;
-overflow: hidden; box-shadow: 0 2px 16px rgba(28,25,22,.08);
-cursor: pointer; transition: transform .2s, box-shadow .2s;
+background:var(–surface);
+border:1px solid var(–border);
+border-radius:var(–radius);
+overflow:hidden; cursor:pointer;
+transition:transform .2s, border-color .2s, box-shadow .2s;
 }
-.card:active { transform: scale(.99); }
-.card.featured { border: 2px solid var(–rust); }
+.card:hover { transform:translateY(-2px); border-color:rgba(201,168,76,0.3); box-shadow:0 8px 32px rgba(0,0,0,.4); }
+.card:active { transform:scale(.99); }
+.card.top-pick { border-color:rgba(201,168,76,0.4); }
 
 .card-img {
-height: 160px; position: relative; overflow: hidden;
+height:130px; position:relative; overflow:hidden;
+background:var(–surface2);
 }
-.card-img-bg {
-width: 100%; height: 100%; object-fit: cover;
-transition: transform .4s;
+.card-img img {
+width:100%; height:100%; object-fit:cover;
+transition:transform .4s;
+filter:brightness(0.92);
 }
-.card:hover .card-img-bg { transform: scale(1.04); }
+.card:hover .card-img img { transform:scale(1.05); }
+.card-img-placeholder {
+width:100%; height:100%;
+display:flex; align-items:center; justify-content:center;
+font-size:48px;
+background:linear-gradient(135deg, var(–surface2), var(–surface));
+}
 .card-badge {
-position: absolute; top: 12px; left: 12px;
-background: var(–rust); color: white;
-font-size: 11px; font-weight: 700; padding: 4px 10px;
-border-radius: 6px; text-transform: uppercase; letter-spacing: .5px;
+position:absolute; top:10px; left:10px;
+background:var(–gold); color:var(–bg);
+font-size:9px; font-weight:700; padding:3px 8px;
+border-radius:20px; letter-spacing:0.8px; text-transform:uppercase;
 }
-.card-badge.green { background: var(–green); }
-.card-badge.gold { background: var(–gold); color: var(–charcoal); }
+.card-badge.green { background:var(–green); color:white; }
 .card-fav {
-position: absolute; top: 12px; right: 12px;
-background: rgba(255,255,255,.9); border-radius: 50%;
-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-cursor: pointer;
+position:absolute; top:8px; right:8px;
+width:28px; height:28px; border-radius:50%;
+background:rgba(15,14,12,.6); backdrop-filter:blur(8px);
+display:flex; align-items:center; justify-content:center;
+cursor:pointer; border:1px solid var(–border);
+transition:all .2s;
 }
+.card-fav:hover { background:rgba(201,168,76,.2); border-color:var(–gold); }
+.card-fav svg { width:13px; height:13px; }
 
-.card-body { padding: 16px; }
-.card-top { display: flex; align-items: flex-start; justify-content: space-between; }
-.card-name { font-family: ‘Playfair Display’, serif; font-size: 18px; font-weight: 700; }
-.card-cuisine { font-size: 12px; color: var(–gray); margin-top: 2px; }
-.card-score {
-background: var(–charcoal); color: white;
-border-radius: 8px; padding: 4px 8px;
-font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 3px;
-flex-shrink: 0;
+.card-body { padding:12px; }
+.card-name {
+font-family:‘Cormorant Garamond’,serif;
+font-size:17px; font-weight:600; color:var(–text);
+white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+line-height:1.2;
 }
-.card-score svg { color: var(–gold); }
+.card-type { font-size:10px; color:var(–muted); margin-top:2px; text-transform:capitalize; }
 
-.card-meta {
-display: flex; gap: 14px; margin: 12px 0;
-font-size: 13px; color: var(–gray);
+.card-row { display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
+.card-rating {
+display:flex; align-items:center; gap:4px;
+font-size:13px; font-weight:600; color:var(–text);
 }
-.card-meta-item { display: flex; align-items: center; gap: 4px; }
+.card-rating svg { width:11px; height:11px; fill:var(–gold); flex-shrink:0; }
+.card-reviews { font-size:10px; color:var(–muted); }
+.card-status { font-size:10px; font-weight:500; }
+.card-status.open { color:var(–green); }
+.card-status.closed { color:var(–red); }
 
-.card-ai-note {
-background: var(–cream); border-radius: 10px;
-padding: 10px 12px; font-size: 13px;
-color: var(–charcoal); line-height: 1.5;
-border-left: 3px solid var(–rust);
-margin-top: 10px;
+.card-ai {
+margin-top:10px; padding:9px 10px;
+background:rgba(201,168,76,0.06);
+border-left:2px solid var(–gold);
+border-radius:0 8px 8px 0;
+font-size:11px; color:rgba(237,232,223,0.7); line-height:1.5;
 }
-.card-ai-note-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(–rust); font-weight: 700; margin-bottom: 4px; }
-
-.card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
-.tag {
-background: var(–gray-light); border-radius: 6px;
-padding: 4px 10px; font-size: 12px; color: var(–gray);
-}
+.card-ai-label { font-size:9px; color:var(–gold); font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:3px; }
 
 .card-footer {
-border-top: 1px solid var(–gray-light);
-padding: 12px 16px;
-display: flex; align-items: center; justify-content: space-between;
+padding:8px 12px 12px;
+display:flex; align-items:center; justify-content:space-between;
 }
-.card-price { font-weight: 700; font-size: 13px; color: var(–charcoal); }
-.card-price span { color: var(–gray); font-weight: 400; }
-.card-btn {
-background: var(–rust); color: white;
-border: none; border-radius: 10px;
-padding: 8px 18px; font-size: 13px; font-weight: 600;
-cursor: pointer; transition: background .2s;
+.card-price { font-size:11px; color:var(–muted); }
+.card-dir {
+background:var(–gold); color:var(–bg);
+border:none; border-radius:8px;
+padding:6px 12px; font-size:11px; font-weight:600;
+cursor:pointer; transition:background .2s;
 }
-.card-btn:active { background: var(–rust-dark); }
-
-/* ── REVIEWS STRIP ── */
-.reviews-strip {
-display: flex; gap: 10px; overflow-x: auto; padding: 4px 20px 16px;
-scrollbar-width: none;
-}
-.reviews-strip::-webkit-scrollbar { display: none; }
-.review-card {
-background: white; border-radius: 14px;
-padding: 14px; min-width: 220px;
-box-shadow: 0 2px 12px rgba(28,25,22,.07);
-}
-.review-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.review-avatar {
-width: 32px; height: 32px; border-radius: 50%;
-display: flex; align-items: center; justify-content: center;
-font-size: 13px; font-weight: 700; color: white;
-}
-.review-name { font-size: 13px; font-weight: 600; }
-.review-stars { font-size: 11px; color: var(–gold); }
-.review-text { font-size: 12px; color: var(–gray); line-height: 1.5; }
-
-/* ── BOTTOM NAV ── */
-nav {
-position: fixed; bottom: 0; left: 0; right: 0;
-background: rgba(255,253,249,.95); backdrop-filter: blur(20px);
-border-top: 1px solid var(–gray-light);
-display: flex; padding: 10px 0;
-padding-bottom: calc(10px + env(safe-area-inset-bottom));
-z-index: 200;
-}
-.nav-item {
-flex: 1; display: flex; flex-direction: column;
-align-items: center; gap: 4px; cursor: pointer;
-transition: color .2s;
-color: var(–gray);
-}
-.nav-item.active { color: var(–rust); }
-.nav-item svg { transition: transform .2s; }
-.nav-item.active svg { transform: scale(1.15); }
-.nav-label { font-size: 10px; font-weight: 600; letter-spacing: .3px; }
-.nav-center {
-flex: 1; display: flex; align-items: center; justify-content: center;
-}
-.nav-fab {
-width: 52px; height: 52px; border-radius: 16px;
-background: var(–rust); box-shadow: 0 6px 20px rgba(196,98,45,.4);
-display: flex; align-items: center; justify-content: center;
-cursor: pointer; transition: transform .2s;
-margin-top: -16px;
-}
-.nav-fab:active { transform: scale(.94); }
+.card-dir:active { background:var(–gold-light); }
 
 /* ── MODAL ── */
-.modal-backdrop {
-position: fixed; inset: 0; background: rgba(28,25,22,.6);
-backdrop-filter: blur(4px); z-index: 300;
-display: none; align-items: flex-end;
+.modal-bg {
+position:fixed; inset:0; z-index:400;
+background:rgba(0,0,0,.7); backdrop-filter:blur(8px);
+display:none; align-items:flex-end;
 }
-.modal-backdrop.open { display: flex; animation: fadeIn .3s ease; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.modal {
-background: white; border-radius: 24px 24px 0 0;
-width: 100%; max-height: 80dvh; overflow-y: auto;
-animation: slideUp .4s cubic-bezier(.34,1.56,.64,1);
+.modal-bg.open { display:flex; animation:fadeIn .3s ease; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.modal-sheet {
+background:var(–surface); border-radius:20px 20px 0 0;
+width:100%; max-height:82dvh; overflow-y:auto;
+animation:slideUp .4s cubic-bezier(.34,1.56,.64,1);
 }
-@keyframes slideUp {
-from { transform: translateY(100%); }
-to { transform: translateY(0); }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.modal-handle { width:36px; height:3px; background:var(–border); border-radius:2px; margin:12px auto; }
+.modal-body { padding:16px 24px 40px; }
+.modal-img { width:calc(100% + 48px); margin:-4px -24px 20px; height:220px; object-fit:cover; }
+.modal-title { font-family:‘Cormorant Garamond’,serif; font-size:28px; font-weight:600; }
+.modal-addr { font-size:13px; color:var(–muted); margin-top:4px; }
+.modal-stats { display:flex; gap:16px; margin-top:14px; flex-wrap:wrap; }
+.modal-stat { font-size:12px; color:var(–muted); display:flex; align-items:center; gap:4px; }
+.modal-ai-box {
+margin-top:20px; padding:16px;
+background:linear-gradient(135deg, #1E1A14, #2A2318);
+border:1px solid rgba(201,168,76,0.2); border-radius:12px;
 }
-.modal-handle {
-width: 40px; height: 4px; background: var(–gray-light);
-border-radius: 2px; margin: 14px auto 0;
-}
-.modal-content { padding: 20px 24px 40px; }
-.modal-title { font-family: ‘Playfair Display’, serif; font-size: 26px; margin-bottom: 4px; }
-.modal-sub { color: var(–gray); font-size: 14px; }
-.modal-section { margin-top: 24px; }
-.modal-section-title { font-weight: 700; font-size: 14px; margin-bottom: 12px; letter-spacing: .5px; text-transform: uppercase; color: var(–gray); }
-.modal-ai-analysis {
-background: linear-gradient(135deg, var(–charcoal), #2D2520);
-border-radius: 16px; padding: 18px;
-color: rgba(255,255,255,.85); font-size: 14px; line-height: 1.7;
-}
-.modal-ai-analysis h4 { color: var(–gold); margin-bottom: 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
-.sentiment-bars { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
-.sentiment-row { display: flex; align-items: center; gap: 10px; }
-.sentiment-label { font-size: 13px; color: var(–gray); width: 80px; flex-shrink: 0; }
-.sentiment-bar-wrap { flex: 1; background: var(–gray-light); border-radius: 4px; height: 6px; overflow: hidden; }
-.sentiment-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
-.sentiment-val { font-size: 12px; font-weight: 700; color: var(–charcoal); width: 32px; text-align: right; flex-shrink: 0; }
-.modal-cta {
-display: flex; gap: 12px; margin-top: 24px;
-}
+.modal-ai-box h4 { font-size:10px; color:var(–gold); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px; }
+.modal-ai-box p { font-size:13px; color:rgba(237,232,223,.8); line-height:1.65; }
+.modal-btns { display:flex; gap:10px; margin-top:20px; }
 .modal-btn {
-flex: 1; padding: 14px; border-radius: 14px;
-font-size: 14px; font-weight: 700; border: none; cursor: pointer;
-transition: transform .1s;
+flex:1; padding:14px; border-radius:12px;
+font-size:13px; font-weight:600; border:none; cursor:pointer;
+font-family:‘Inter’,sans-serif;
+transition:transform .1s;
 }
-.modal-btn:active { transform: scale(.98); }
-.modal-btn.primary { background: var(–rust); color: white; }
-.modal-btn.secondary { background: var(–gray-light); color: var(–charcoal); }
+.modal-btn:active { transform:scale(.98); }
+.modal-btn.primary { background:var(–gold); color:var(–bg); }
+.modal-btn.secondary { background:var(–surface2); color:var(–text); border:1px solid var(–border); }
+
+/* ── SETTINGS ── */
+.settings-bg {
+position:fixed; inset:0; z-index:500;
+background:rgba(0,0,0,.8); backdrop-filter:blur(10px);
+display:none; align-items:flex-end;
+}
+.settings-bg.open { display:flex; animation:fadeIn .3s ease; }
+.settings-sheet {
+background:var(–surface); border-radius:20px 20px 0 0;
+width:100%; padding:0 24px calc(32px + env(safe-area-inset-bottom));
+animation:slideUp .4s cubic-bezier(.34,1.56,.64,1);
+}
+.settings-handle { width:36px; height:3px; background:var(–border); border-radius:2px; margin:12px auto 20px; }
+.settings-title { font-family:‘Cormorant Garamond’,serif; font-size:26px; font-weight:600; margin-bottom:6px; }
+.settings-sub { font-size:13px; color:var(–muted); line-height:1.5; margin-bottom:24px; }
+.field-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:1.5px; color:var(–gold); margin-bottom:6px; }
+.field-input {
+width:100%; background:var(–surface2); border:1px solid var(–border);
+border-radius:12px; padding:12px 14px; font-size:13px;
+font-family:monospace; color:var(–text); outline:none;
+transition:border-color .2s; margin-bottom:14px;
+}
+.field-input:focus { border-color:var(–gold); }
+.key-ok { font-size:11px; color:var(–green); margin-top:-10px; margin-bottom:14px; }
+.key-missing { font-size:11px; color:var(–red); margin-top:-10px; margin-bottom:14px; }
+.settings-save {
+width:100%; background:var(–gold); color:var(–bg);
+border:none; border-radius:12px; padding:15px;
+font-size:14px; font-weight:700; cursor:pointer;
+font-family:‘Inter’,sans-serif; letter-spacing:0.3px;
+transition:background .2s;
+}
+.settings-save:active { background:var(–gold-light); }
+.settings-note { font-size:11px; color:var(–muted); text-align:center; margin-top:12px; line-height:1.6; }
 
 /* ── TOAST ── */
 .toast {
-position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px);
-background: var(–charcoal); color: white;
-padding: 12px 20px; border-radius: 12px; font-size: 14px;
-z-index: 999; transition: transform .4s cubic-bezier(.34,1.56,.64,1);
-white-space: nowrap;
+position:fixed; top:20px; left:50%;
+transform:translateX(-50%) translateY(-80px);
+background:var(–surface); color:var(–text);
+border:1px solid var(–border);
+padding:10px 18px; border-radius:10px; font-size:13px;
+z-index:999; transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,.5);
 }
-.toast.show { transform: translateX(-50%) translateY(0); }
-
-/* ── API KEY BANNER ── */
-.api-banner {
-background: linear-gradient(135deg, #FFF3E0, #FFE0C0);
-border: 1.5px solid #FFB74D;
-border-radius: 14px; margin: 0 20px 16px;
-padding: 14px 16px;
-font-size: 13px; color: #7C4A00;
-}
-.api-banner strong { display: block; margin-bottom: 4px; font-size: 14px; }
-.api-banner code {
-background: rgba(0,0,0,.08); padding: 2px 6px;
-border-radius: 4px; font-size: 12px;
-}
-
-/* ── SETTINGS MODAL ── */
-.settings-overlay {
-position: fixed; inset: 0; background: rgba(28,25,22,.7);
-backdrop-filter: blur(6px); z-index: 500;
-display: none; align-items: flex-end;
-}
-.settings-overlay.open { display: flex; animation: fadeIn .3s ease; }
-.settings-sheet {
-background: var(–warm-white); border-radius: 24px 24px 0 0;
-width: 100%; padding: 0 24px 40px;
-animation: slideUp .4s cubic-bezier(.34,1.56,.64,1);
-}
-.settings-handle { width: 40px; height: 4px; background: var(–gray-light); border-radius: 2px; margin: 14px auto 20px; }
-.settings-title { font-family: ‘Playfair Display’, serif; font-size: 22px; margin-bottom: 6px; }
-.settings-sub { font-size: 13px; color: var(–gray); margin-bottom: 24px; line-height: 1.5; }
-.settings-field { margin-bottom: 16px; }
-.settings-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(–rust); margin-bottom: 6px; }
-.settings-input {
-width: 100%; background: var(–cream); border: 1.5px solid var(–gray-light);
-border-radius: 12px; padding: 12px 14px; font-size: 13px;
-font-family: monospace; color: var(–charcoal);
-outline: none; transition: border-color .2s;
-}
-.settings-input:focus { border-color: var(–rust); }
-.settings-save {
-width: 100%; background: var(–rust); color: white;
-border: none; border-radius: 14px; padding: 15px;
-font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px;
-transition: background .2s;
-}
-.settings-save:active { background: var(–rust-dark); }
-.settings-note { font-size: 12px; color: var(–gray); text-align: center; margin-top: 12px; line-height: 1.5; }
-.key-status { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 4px; }
-.key-status.ok { color: var(–green); }
-.key-status.missing { color: var(–rust); }
+.toast.show { transform:translateX(-50%) translateY(0); }
 </style>
 
 </head>
@@ -530,158 +411,128 @@ transition: background .2s;
 <!-- SPLASH -->
 
 <div id="splash">
-  <div class="splash-logo">Sofra <span>AI</span></div>
-  <div class="splash-sub">Yapay Zeka Destekli Restoran Keşfi</div>
-  <div class="splash-loader"></div>
+  <div class="splash-logo">Sofra <em>AI</em></div>
+  <div class="splash-tagline">Yapay Zeka Destekli Restoran Keşfi</div>
+  <div class="splash-bar"></div>
 </div>
 
 <!-- APP -->
 
 <div id="app">
 
-  <!-- HEADER -->
+  <!-- SIDEBAR -->
 
-  <header>
-    <div class="header-top">
-      <div class="logo">Sofra <span>AI</span></div>
-      <div class="dot-live"></div>
+  <aside>
+    <div class="sidebar-logo">
+      <h1>Sofra <em>AI</em></h1>
+      <p>Akıllı Restoran Rehberi</p>
     </div>
-    <div class="header-loc" onclick="getLocation()">
-      <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-      <span id="locText">Konum alınıyor...</span>
-      <span>· Konum değiştir</span>
-    </div>
-  </header>
-
-  <!-- SEARCH -->
-
-  <div class="search-wrap">
-    <div class="search-inner">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input id="searchInput" type="text" placeholder="Ne yemek istiyorsunuz? (ör: ızgara, vegan, ucuz)">
-      <button class="search-ai-btn" onclick="runAISearch()">✦ Sor</button>
-    </div>
-  </div>
-
-  <!-- FILTERS -->
-
-  <div class="filters">
-    <div class="filter-chip active" onclick="setFilter(this,'Tümü')">Tümü</div>
-    <div class="filter-chip" onclick="setFilter(this,'Yakın')">📍 Yakın</div>
-    <div class="filter-chip" onclick="setFilter(this,'Türk Mutfağı')">🫕 Türk</div>
-    <div class="filter-chip" onclick="setFilter(this,'İtalyan')">🍕 İtalyan</div>
-    <div class="filter-chip" onclick="setFilter(this,'Japon')">🍱 Japon</div>
-    <div class="filter-chip" onclick="setFilter(this,'Vegan')">🌿 Vegan</div>
-    <div class="filter-chip" onclick="setFilter(this,'Bütçe Dostu')">💸 Uygun Fiyat</div>
-    <div class="filter-chip" onclick="setFilter(this,'Lüks')">✨ Fine Dining</div>
-  </div>
-
-  <!-- SCROLL CONTENT -->
-
-  <div id="scrollContent">
 
 ```
-<!-- MAP -->
-<div class="map-section">
-  <div id="googleMap" style="width:100%;height:220px;border-radius:18px;"></div>
+<div class="sidebar-loc" onclick="openSettings()">
+  <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+  <span id="locText">Konum alınıyor...</span>
 </div>
 
-<!-- AI PANEL -->
-<div class="ai-panel" id="aiPanel">
-  <div class="ai-header">
-    <div class="ai-icon">
-      <svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18 2.5 2.5 0 0 0 10 15.5 2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5z"/></svg>
-    </div>
+<div class="sidebar-search">
+  <div class="search-box">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="searchInput" type="text" placeholder="Mutfak, yemek, atmosfer...">
+    <button class="search-btn" onclick="doSearch()">Ara</button>
+  </div>
+</div>
+
+<div class="sidebar-filters">
+  <div class="filter-label">Filtreler</div>
+  <button class="filter-btn active" onclick="setFilter(this,'')"><span class="fi">🍽</span> Tümü</button>
+  <button class="filter-btn" onclick="setFilter(this,'Türk')"><span class="fi">🫕</span> Türk Mutfağı</button>
+  <button class="filter-btn" onclick="setFilter(this,'İtalyan')"><span class="fi">🍕</span> İtalyan</button>
+  <button class="filter-btn" onclick="setFilter(this,'Japon')"><span class="fi">🍱</span> Japon</button>
+  <button class="filter-btn" onclick="setFilter(this,'Vegan')"><span class="fi">🌿</span> Vegan</button>
+  <button class="filter-btn" onclick="setFilter(this,'kahvaltı')"><span class="fi">☕</span> Kahvaltı</button>
+  <button class="filter-btn" onclick="setFilter(this,'fine dining')"><span class="fi">✨</span> Fine Dining</button>
+</div>
+
+<div class="ai-panel">
+  <div class="ai-panel-header">
+    <div class="ai-dot-icon">✦</div>
     <div>
-      <div class="ai-title">AI Analizi</div>
-      <div class="ai-sub" id="aiSub">Claude Sonnet · Analiz ediliyor...</div>
+      <div class="ai-panel-title">AI Analizi</div>
+      <div class="ai-panel-sub" id="aiSub">Claude Sonnet</div>
     </div>
   </div>
-  <div class="ai-content" id="aiContent">
-    <div class="ai-typing"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>
+  <div class="ai-panel-text" id="aiText">
+    <div class="typing"><span></span><span></span><span></span></div>
   </div>
 </div>
 
-<!-- RESTAURANTS -->
-<div class="section-head">
-  <div class="section-title">AI Önerileri</div>
-  <div class="section-sub">Tümünü Gör →</div>
+<div class="sidebar-nav">
+  <button class="nav-btn active">
+    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+    Keşfet
+  </button>
+  <button class="nav-btn" onclick="googleMap&&googleMap.setCenter(userLocation)">
+    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+    Harita
+  </button>
+  <button class="nav-btn" onclick="showToast('❤️ Favorileriniz')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+    Favoriler
+  </button>
+  <button class="nav-btn" onclick="openSettings()">
+    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+    Ayarlar
+  </button>
 </div>
-
-<div class="cards-wrap" id="cardsWrap"></div>
-
-<!-- REVIEWS -->
-<div class="section-head" style="margin-top:24px">
-  <div class="section-title">Güncel Yorumlar</div>
-  <div class="section-sub">Daha fazla →</div>
-</div>
-<div class="reviews-strip" id="reviewsStrip"></div>
 ```
 
-  </div>
+  </aside>
 
-  <!-- NAV -->
+  <!-- MAIN -->
 
-  <nav>
-    <div class="nav-item active">
-      <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span class="nav-label">Keşfet</span>
+  <main>
+    <div id="mapWrap" class="map-loading">
+      <div class="typing"><span></span><span></span><span></span></div>
+      Harita yükleniyor...
     </div>
-    <div class="nav-item" onclick="googleMap && googleMap.setCenter(userLocation)">
-      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>
-      <span class="nav-label">Harita</span>
-    </div>
-    <div class="nav-center">
-      <div class="nav-fab" onclick="runAISearch()">
-        <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18 2.5 2.5 0 0 0 10 15.5 2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5z"/></svg>
-      </div>
-    </div>
-    <div class="nav-item" onclick="showToast('❤️ Favorileriniz')">
-      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      <span class="nav-label">Favoriler</span>
-    </div>
-    <div class="nav-item" onclick="openSettings()">
-      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span class="nav-label">Profil</span>
-    </div>
-  </nav>
-
-</div>
-
-<!-- SETTINGS OVERLAY -->
-
-<div class="settings-overlay" id="settingsOverlay" onclick="closeSettingsOutside(event)">
-  <div class="settings-sheet">
-    <div class="settings-handle"></div>
-    <div class="settings-title">⚙️ API Ayarları</div>
-    <div class="settings-sub">Key'ler sadece bu cihazda saklanır, hiçbir yere gönderilmez.</div>
 
 ```
-<div class="settings-field">
-  <div class="settings-label">🗺 Google Maps API Key</div>
-  <input class="settings-input" id="gmapsInput" type="password" placeholder="AIzaSy...">
-  <div class="key-status" id="gmapsStatus"></div>
+<div class="cards-area" id="cardsArea">
+  <div class="loading-state">
+    <div class="typing"><span></span><span></span><span></span></div>
+    <span>Yakınındaki restoranlar aranıyor...</span>
+  </div>
 </div>
-
-<div class="settings-field">
-  <div class="settings-label">✦ Anthropic (Claude) API Key</div>
-  <input class="settings-input" id="claudeInput" type="password" placeholder="sk-ant-...">
-  <div class="key-status" id="claudeStatus"></div>
-</div>
-
-<button class="settings-save" onclick="saveKeys()">Kaydet ve Başlat 🚀</button>
-<div class="settings-note">Key'ler şifreli olarak tarayıcıda saklanır.<br>Kimse göremez, sunucuya gönderilmez.</div>
 ```
 
-  </div>
+  </main>
+
 </div>
 
 <!-- MODAL -->
 
-<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
-  <div class="modal" id="modal">
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-content" id="modalContent"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+
+<div class="settings-bg" id="settingsBg" onclick="closeSettingsOut(event)">
+  <div class="settings-sheet">
+    <div class="settings-handle"></div>
+    <div class="settings-title">⚙️ API Ayarları</div>
+    <div class="settings-sub">Key'ler yalnızca bu cihazda saklanır, hiçbir yere gönderilmez.</div>
+    <div class="field-label">Google Maps API Key</div>
+    <input class="field-input" id="gmKey" type="password" placeholder="AIzaSy...">
+    <div id="gmSt"></div>
+    <div class="field-label">Anthropic (Claude) API Key</div>
+    <input class="field-input" id="clKey" type="password" placeholder="sk-ant-...">
+    <div id="clSt"></div>
+    <button class="settings-save" onclick="saveKeys()">Kaydet ve Başlat ✦</button>
+    <div class="settings-note">Key'ler tarayıcıda şifreli saklanır · Kimse göremez</div>
   </div>
 </div>
 
@@ -690,723 +541,279 @@ transition: background .2s;
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════
-// CONFIG — buraya gerçek API anahtarlarını girin
-// ═══════════════════════════════════════════
-// API keyler localStorage'da — kodda görünmez, güvenli
+// ── CONFIG ──
 const CONFIG = {
-  get GOOGLE_MAPS_API_KEY() { return localStorage.getItem('sofra_gmaps_key') || ''; },
-  get ANTHROPIC_API_KEY() { return localStorage.getItem('sofra_claude_key') || ''; },
-  USE_DEMO_DATA: false
+  get GM() { return localStorage.getItem('s_gm') || ''; },
+  get CL() { return localStorage.getItem('s_cl') || ''; },
 };
 
-// ═══════════════════════════════════════════
-// DEMO DATA
-// ═══════════════════════════════════════════
-const restaurants = [
-  {
-    name: 'Karadeniz Ocakbaşı',
-    cuisine: 'Türk Mutfağı · Izgara',
-    rating: 4.8,
-    reviews: 1243,
-    distance: '320m',
-    time: '8 dk',
-    price: '₺₺',
-    priceRange: '150-300₺/kişi',
-    badge: 'AI Seçimi',
-    badgeClass: '',
-    aiNote: 'Bin+ yorum analizi: "pişirme kalitesi" ve "personel nezaketi" için olağanüstü puanlar. Hafta sonu kuyruk bekleniyor.',
-    tags: ['Mangal', 'Rezervasyon', 'Aile Dostu'],
-    color: '#C4622D',
-    sentiment: { lezzet: 96, servis: 88, fiyat: 82, hijyen: 91 },
-    address: 'Bağdat Cad. No:42, İstanbul',
-    phone: '+90 216 555 01 01'
-  },
-  {
-    name: 'Sakura Ramen House',
-    cuisine: 'Japon · Ramen & Sushi',
-    rating: 4.6,
-    reviews: 876,
-    distance: '650m',
-    time: '12 dk',
-    price: '₺₺₺',
-    priceRange: '250-450₺/kişi',
-    badge: 'Yeni',
-    badgeClass: 'green',
-    aiNote: 'Son 30 günde %94 pozitif yorum. "Otantik Japon lezzeti" teması öne çıkıyor. Vejetaryen seçenekler var.',
-    tags: ['Vejetaryen', 'Sake Bar', 'Rezervasyon'],
-    color: '#9B4520',
-    sentiment: { lezzet: 94, servis: 79, fiyat: 65, hijyen: 95 },
-    address: 'Nişantaşı Mah., İstanbul',
-    phone: '+90 212 555 02 02'
-  },
-  {
-    name: 'Verde Vegan Kitchen',
-    cuisine: 'Vegan · Sağlıklı',
-    rating: 4.7,
-    reviews: 542,
-    distance: '210m',
-    time: '5 dk',
-    price: '₺₺',
-    priceRange: '120-220₺/kişi',
-    badge: 'Trend',
-    badgeClass: 'gold',
-    aiNote: 'Yorumlar "porsiyon büyüklüğü" ve "yaratıcı menü" konusunda çok yüksek. Glutensiz seçenekler mevcuttur.',
-    tags: ['Vegan', 'Glütensiz', 'Paket Servis'],
-    color: '#3D7A5A',
-    sentiment: { lezzet: 91, servis: 93, fiyat: 88, hijyen: 97 },
-    address: 'Kadıköy Çarşı, İstanbul',
-    phone: '+90 216 555 03 03'
-  },
-  {
-    name: 'La Dolce Vita',
-    cuisine: 'İtalyan · Fine Dining',
-    rating: 4.9,
-    reviews: 389,
-    distance: '1.2km',
-    time: '18 dk',
-    price: '₺₺₺₺',
-    priceRange: '500-800₺/kişi',
-    badge: 'Lüks',
-    badgeClass: '',
-    aiNote: '"Romantik akşam yemeği" için #1 önerilen restoran. Şef masası deneyimi yorumlarda defalarca geçiyor.',
-    tags: ['Fine Dining', 'Şarap Menüsü', 'Şef Masası'],
-    color: '#D4A853',
-    sentiment: { lezzet: 98, servis: 97, fiyat: 72, hijyen: 99 },
-    address: 'Bebek Sahil, İstanbul',
-    phone: '+90 212 555 04 04'
-  }
-];
+// ── STATE ──
+let googleMap = null, placesService = null, userLocation = null;
+let realPlaces = [], mapMarkers = [];
 
-const demoReviews = [
-  { name: 'Ayşe K.', initial: 'A', color: '#C4622D', stars: '★★★★★', text: 'Karadeniz\'in en güzel ocakbaşısı. Izgara et mükemmeldi!', restaurant: 'Karadeniz' },
-  { name: 'Mehmet Y.', initial: 'M', color: '#3D7A5A', stars: '★★★★★', text: 'Sakura\'nın ramen\'i gerçekten otantik. Kesinlikle tavsiye ederim.', restaurant: 'Sakura' },
-  { name: 'Selin T.', initial: 'S', color: '#9B4520', stars: '★★★★☆', text: 'Verde\'nin vegan menüsü harika, fiyatlar da çok uygun.', restaurant: 'Verde' },
-  { name: 'Can B.', initial: 'C', color: '#D4A853', stars: '★★★★★', text: 'La Dolce Vita\'da nişan yaptık. Muhteşem bir deneyimdi!', restaurant: 'La Dolce' },
-  { name: 'Zeynep A.', initial: 'Z', color: '#6B6560', stars: '★★★★★', text: 'AI\'nın önerdiği restoran mükemmeldi, bir daha gideceğim.', restaurant: 'Karadeniz' },
-];
-
-const aiResponses = [
-  (q) => `Arama: <span class="ai-highlight">"${q}"</span> için çevrenizde <span class="ai-highlight">4 restoran</span> buldum. Yorum analizi yapıldı.\n\n📊 <span class="ai-highlight">Karadeniz Ocakbaşı</span> en yüksek duygu skoruyla öne çıkıyor. Özellikle "lezzet" kategorisinde diğerlerinin üzerinde. Bütçenize ve tercihlerinize göre <span class="ai-highlight">Verde Vegan Kitchen</span> da harika bir seçenek.`,
-  () => `✦ <span class="ai-highlight">847 yorum</span> analiz edildi. Genel tablo: çevrenizde bulunan restoranlar için ortalama müşteri memnuniyeti <span class="ai-highlight">%91</span>.\n\n🏆 Bu akşam için kişisel önerim: <span class="ai-highlight">Karadeniz Ocakbaşı</span> — sıcak atmosfer, kaliteli ızgara ve uygun fiyat kombinasyonu.`,
-];
-
-// ═══════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════
-let googleMap = null;
-let placesService = null;
-let userLocation = null;
-let realPlaces = [];
-let mapMarkers = [];
-
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
+// ── INIT ──
 window.onload = () => {
   setTimeout(() => {
-    document.getElementById('splash').classList.add('hide');
+    document.getElementById('splash').classList.add('out');
     setTimeout(() => {
-      document.getElementById('app').classList.add('visible');
-      renderCards();
-      renderReviews();
-
-      const gmapsKey = CONFIG.GOOGLE_MAPS_API_KEY;
-      if (!gmapsKey) {
-        openSettings();
-        return;
-      }
-      // Load Google Maps script dynamically
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${gmapsKey}&libraries=places&callback=onGoogleMapsReady&language=tr`;
-      script.async = true;
-      document.head.appendChild(script);
-    }, 600);
-  }, 2200);
+      document.getElementById('app').classList.add('on');
+      const gm = CONFIG.GM, cl = CONFIG.CL;
+      if (!gm || !cl) { openSettings(); return; }
+      loadGoogleMaps(gm);
+    }, 800);
+  }, 2400);
 };
 
-function onGoogleMapsReady() {
-  navigator.geolocation.getCurrentPosition(pos => {
-    userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-    document.getElementById('locText').textContent = 'Konumunuz bulundu';
-    initMap();
-    searchNearbyRestaurants();
-  }, () => {
-    // fallback: Istanbul
-    userLocation = { lat: 41.0082, lng: 28.9784 };
-    document.getElementById('locText').textContent = 'İstanbul (varsayılan)';
-    initMap();
-    searchNearbyRestaurants();
-  });
+function loadGoogleMaps(key) {
+  const s = document.createElement('script');
+  s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places&callback=mapsReady&language=tr`;
+  s.async = true;
+  s.onerror = () => { showToast('⚠️ Google Maps yüklenemedi — key\'i kontrol edin'); openSettings(); };
+  document.head.appendChild(s);
 }
 
+window.mapsReady = function() {
+  navigator.geolocation.getCurrentPosition(
+    p => { userLocation = {lat: p.coords.latitude, lng: p.coords.longitude}; document.getElementById('locText').textContent = 'Konumunuz bulundu'; initMap(); searchPlaces(''); },
+    () => { userLocation = {lat:41.0082, lng:28.9784}; document.getElementById('locText').textContent = 'İstanbul (varsayılan)'; initMap(); searchPlaces(''); }
+  );
+};
+
 function initMap() {
+  const wrap = document.getElementById('mapWrap');
+  wrap.className = ''; wrap.innerHTML = '';
+  wrap.id = 'googleMap';
+  wrap.style.cssText = 'height:260px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.07)';
+
   googleMap = new google.maps.Map(document.getElementById('googleMap'), {
-    center: userLocation,
-    zoom: 15,
-    disableDefaultUI: false,
+    center: userLocation, zoom: 15,
+    disableDefaultUI: true,
     zoomControl: true,
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: false,
     styles: [
-      { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-      { featureType: 'transit', stylers: [{ visibility: 'simplified' }] },
-      { elementType: 'geometry', stylers: [{ color: '#f5efe6' }] },
-      { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
-      { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c9e8f7' }] },
+      {elementType:'geometry', stylers:[{color:'#1a1814'}]},
+      {elementType:'labels.text.fill', stylers:[{color:'#a09880'}]},
+      {elementType:'labels.text.stroke', stylers:[{color:'#1a1814'}]},
+      {featureType:'road', elementType:'geometry', stylers:[{color:'#2d2820'}]},
+      {featureType:'road.arterial', elementType:'geometry', stylers:[{color:'#373025'}]},
+      {featureType:'road.highway', elementType:'geometry', stylers:[{color:'#3d3426'}]},
+      {featureType:'water', elementType:'geometry', stylers:[{color:'#0d1b2a'}]},
+      {featureType:'poi', elementType:'labels', stylers:[{visibility:'off'}]},
+      {featureType:'transit', stylers:[{visibility:'simplified'}]},
     ]
   });
 
   // User pin
   new google.maps.Marker({
-    position: userLocation,
-    map: googleMap,
-    icon: {
-      path: google.maps.SymbolPath.CIRCLE,
-      scale: 10,
-      fillColor: '#C4622D',
-      fillOpacity: 1,
-      strokeColor: '#fff',
-      strokeWeight: 3
-    },
-    title: 'Siz buradasınız'
+    position: userLocation, map: googleMap,
+    icon: { path: google.maps.SymbolPath.CIRCLE, scale:9, fillColor:'#C9A84C', fillOpacity:1, strokeColor:'#0F0E0C', strokeWeight:2 },
+    title: 'Siz'
   });
 
   placesService = new google.maps.places.PlacesService(googleMap);
 }
 
-function searchNearbyRestaurants(keyword) {
+function searchPlaces(kw) {
   if (!placesService) return;
+  mapMarkers.forEach(m => m.setMap(null)); mapMarkers = [];
+  document.getElementById('cardsArea').innerHTML = `<div class="loading-state"><div class="typing"><span></span><span></span><span></span></div><span>Restoranlar aranıyor...</span></div>`;
+  document.getElementById('aiText').innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
 
-  const req = {
-    location: userLocation,
-    radius: 1500,
-    type: 'restaurant',
-    language: 'tr',
-    keyword: keyword || ''
-  };
-
-  // Clear old markers
-  mapMarkers.forEach(m => m.setMap(null));
-  mapMarkers = [];
-
-  document.getElementById('cardsWrap').innerHTML = `
-    <div style="text-align:center;padding:40px 20px;color:var(--gray)">
-      <div class="ai-typing" style="justify-content:center;margin-bottom:12px">
-        <div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div>
-      </div>
-      <div>Yakınındaki restoranlar aranıyor...</div>
-    </div>`;
-
-  placesService.nearbySearch(req, (results, status) => {
-    if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
-      realPlaces = results.slice(0, 8);
-      renderRealCards(realPlaces);
-      addMarkersToMap(realPlaces);
-      autoAIAnalysis(realPlaces, keyword);
-    } else {
-      document.getElementById('cardsWrap').innerHTML = `<div style="text-align:center;padding:40px;color:var(--gray)">Sonuç bulunamadı. Farklı bir arama deneyin.</div>`;
-    }
-  });
-}
-
-function addMarkersToMap(places) {
-  const colors = ['#C4622D','#9B4520','#3D7A5A','#D4A853','#6B6560','#C4622D','#9B4520','#3D7A5A'];
-  places.forEach((p, i) => {
-    const marker = new google.maps.Marker({
-      position: p.geometry.location,
-      map: googleMap,
-      title: p.name,
-      icon: {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z',
-        fillColor: colors[i % colors.length],
-        fillOpacity: 1,
-        strokeColor: '#fff',
-        strokeWeight: 1.5,
-        scale: 1.6,
-        anchor: new google.maps.Point(12, 22)
+  placesService.nearbySearch(
+    { location: userLocation, radius: 1500, type: 'restaurant', language: 'tr', keyword: kw },
+    (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK && results.length) {
+        realPlaces = results.slice(0, 8);
+        renderCards(realPlaces);
+        addMarkers(realPlaces);
+        aiAnalyze(realPlaces, kw);
+      } else {
+        document.getElementById('cardsArea').innerHTML = `<div class="loading-state">Sonuç bulunamadı.</div>`;
       }
+    }
+  );
+}
+
+function addMarkers(places) {
+  places.forEach((p, i) => {
+    const m = new google.maps.Marker({
+      position: p.geometry.location, map: googleMap, title: p.name,
+      icon: { path:'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z',
+        fillColor: i===0?'#C9A84C':'#C4622D', fillOpacity:1,
+        strokeColor:'#0F0E0C', strokeWeight:1.5, scale:1.6,
+        anchor: new google.maps.Point(12,22) }
     });
-    marker.addListener('click', () => openRealCard(i));
-    mapMarkers.push(marker);
+    m.addListener('click', () => openCard(i));
+    mapMarkers.push(m);
   });
 }
 
-function renderRealCards(places) {
+function renderCards(places) {
   const emojis = ['🍽','🥘','🍜','🥗','🍖','🫕','🍝','🥙'];
-  const wrap = document.getElementById('cardsWrap');
-  wrap.innerHTML = places.map((p, i) => {
+  document.getElementById('cardsArea').innerHTML = places.map((p, i) => {
     const rating = p.rating || '—';
-    const reviews = p.user_ratings_total || 0;
-    const isOpen = p.opening_hours ? (p.opening_hours.open_now ? '🟢 Açık' : '🔴 Kapalı') : '';
-    const priceLevel = p.price_level ? '₺'.repeat(p.price_level) : '₺₺';
-    const photo = p.photos && p.photos[0] ? p.photos[0].getUrl({maxWidth:400,maxHeight:200}) : null;
+    const cnt = p.user_ratings_total || 0;
+    const open = p.opening_hours ? (p.opening_hours.open_now ? '<span class="card-status open">● Açık</span>' : '<span class="card-status closed">● Kapalı</span>') : '';
+    const price = p.price_level ? '₺'.repeat(p.price_level) : '';
+    const photo = p.photos?.[0]?.getUrl({maxWidth:400,maxHeight:200});
+    const types = (p.types||[]).filter(t=>!['restaurant','food','point_of_interest','establishment'].includes(t)).slice(0,2).map(t=>t.replace(/_/g,' ')).join(' · ');
 
-    return `
-    <div class="card ${i===0?'featured':''}" onclick="openRealCard(${i})">
+    return `<div class="card${i===0?' top-pick':''}" onclick="openCard(${i})">
       <div class="card-img">
-        ${photo
-          ? `<img class="card-img-bg" src="${photo}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">`
-          : `<div style="width:100%;height:100%;background:linear-gradient(135deg,#C4622D22,#C4622D44);display:flex;align-items:center;justify-content:center;"><span style="font-size:64px">${emojis[i%8]}</span></div>`
-        }
-        <div class="card-badge ${i===0?'':'green'}">${i===0?'AI Seçimi':'Yakın'}</div>
+        ${photo ? `<img src="${photo}" alt="${p.name}" loading="lazy">` : `<div class="card-img-placeholder">${emojis[i%8]}</div>`}
+        <div class="card-badge${i===0?'':' green'}">${i===0?'✦ Önerilen':'Yakın'}</div>
         <div class="card-fav" onclick="event.stopPropagation();toggleFav(this)">
-          <svg width="16" height="16" fill="none" stroke="#C4622D" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <svg fill="none" stroke="rgba(237,232,223,0.7)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
         </div>
       </div>
       <div class="card-body">
-        <div class="card-top">
-          <div style="flex:1;min-width:0">
-            <div class="card-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
-            <div class="card-cuisine">${p.types ? p.types.slice(0,2).join(' · ').replace(/_/g,' ') : 'Restoran'}</div>
-          </div>
-          <div class="card-score">
-            <svg width="12" height="12" fill="#D4A853" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            ${rating}
-          </div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-type">${types||'Restoran'}</div>
+        <div class="card-row">
+          <div class="card-rating"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>${rating} <span class="card-reviews">(${cnt.toLocaleString()})</span></div>
+          ${open}
         </div>
-        <div class="card-meta">
-          <div class="card-meta-item">${isOpen}</div>
-          <div class="card-meta-item">💬 ${reviews.toLocaleString()} yorum</div>
-          <div class="card-meta-item">${priceLevel}</div>
-        </div>
-        <div class="card-ai-note">
-          <div class="card-ai-note-label">✦ AI Analizi</div>
-          <span id="ai-note-${i}">Analiz ediliyor...</span>
-        </div>
+        <div class="card-ai"><div class="card-ai-label">✦ AI</div><span id="n${i}">Analiz ediliyor...</span></div>
       </div>
       <div class="card-footer">
-        <div class="card-price">${priceLevel} <span>· ${p.vicinity || ''}</span></div>
-        <button class="card-btn" onclick="event.stopPropagation();openInMaps(${i})">🗺 Yol Tarifi</button>
+        <span class="card-price">${price} ${p.vicinity?'· '+p.vicinity.split(',')[0]:''}</span>
+        <button class="card-dir" onclick="event.stopPropagation();goMaps(${i})">Yol Tarifi</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function openInMaps(i) {
-  const p = realPlaces[i];
-  if (!p) return;
-  const loc = p.geometry.location;
-  const url = `https://maps.google.com/?q=${loc.lat()},${loc.lng()}`;
-  window.open(url, '_blank');
-}
-
-async function autoAIAnalysis(places, keyword) {
-  const names = places.slice(0,4).map((p,i) => `${i+1}. ${p.name} (puan: ${p.rating||'?'}, ${p.user_ratings_total||0} yorum, ${p.opening_hours?.open_now ? 'açık':'bilinmiyor'})`).join('\n');
-  const q = keyword || 'genel restoran önerisi';
-
-  const prompt = `Sen Sofra AI adlı bir Türk restoran öneri asistanısın.
-Kullanıcı "${q}" için arama yaptı.
-Yakınındaki gerçek restoranlar:
-${names}
-
-Görevin:
-1. En iyi restoranı öner ve neden seçtiğini 1-2 cümle ile açıkla.
-2. Her restoran için kart açıklaması yaz — maksimum 20 kelime, samimi ve Türkçe.
-Yanıtı SADECE JSON formatında ver, başka hiçbir şey yazma:
-{
-  "genel": "Genel öneri metni buraya",
-  "notlar": ["1. restoran notu", "2. restoran notu", "3. restoran notu", "4. restoran notu"]
-}`;
+async function aiAnalyze(places, kw) {
+  const list = places.slice(0,6).map((p,i)=>`${i+1}. ${p.name} | Puan:${p.rating||'?'} | Yorum:${p.user_ratings_total||0} | ${p.opening_hours?.open_now?'Açık':'Kapalı'}`).join('\n');
+  const prompt = `Sen Sofra AI'sın. Kullanıcı "${kw||'genel'}" aradı. Gerçek veriler:\n${list}\n\nGörev:\n1. genel: 2 cümle samimi Türkçe öneri yaz\n2. notlar: Her restoran için 12 kelimeyi geçmeyen not yaz\n\nSadece JSON döndür:\n{"genel":"...","notlar":["...","...","...","...","...","..."]}`;
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': CONFIG.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 600,
-        messages: [{ role: 'user', content: prompt }]
-      })
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':CONFIG.CL,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})
     });
-    const data = await res.json();
-    const text = data.content[0].text.trim();
-    const clean = text.replace(/```json|```/g,'').trim();
-    const json = JSON.parse(clean);
-
-    // Update AI panel
-    const panel = document.getElementById('aiPanel');
-    panel.classList.add('visible');
-    document.getElementById('aiContent').innerHTML = json.genel;
-    document.getElementById('aiSub').textContent = `Claude Sonnet · ${places.length} restoran analiz edildi`;
-
-    // Update each card note
-    json.notlar.forEach((note, i) => {
-      const el = document.getElementById(`ai-note-${i}`);
-      if (el) el.textContent = note;
-    });
+    const d = await res.json();
+    const json = JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
+    document.getElementById('aiText').textContent = json.genel;
+    document.getElementById('aiSub').textContent = `Claude Sonnet · ${places.length} mekan analiz edildi`;
+    json.notlar.forEach((n,i) => { const el=document.getElementById('n'+i); if(el) el.textContent=n; });
   } catch(e) {
-    console.error('AI analiz hatası:', e);
-    places.forEach((p, i) => {
-      const el = document.getElementById(`ai-note-${i}`);
-      if (el) el.textContent = `${p.rating ? p.rating + ' yıldız,' : ''} ${p.user_ratings_total || 0} kullanıcı değerlendirmesi.`;
-    });
+    document.getElementById('aiText').textContent = 'Analiz tamamlandı. Yukarıdaki mekanları inceleyebilirsiniz.';
+    places.forEach((_,i) => { const el=document.getElementById('n'+i); if(el) el.textContent=`${places[i].rating||'?'} puan · ${places[i].user_ratings_total||0} yorum`; });
   }
 }
 
-function renderCards() {
-  const wrap = document.getElementById('cardsWrap');
-  wrap.innerHTML = restaurants.map((r, i) => `
-    <div class="card ${i===0?'featured':''}" onclick="openCard(${i})">
-      <div class="card-img">
-        <div style="width:100%;height:100%;background:linear-gradient(135deg, ${r.color}22, ${r.color}44);display:flex;align-items:center;justify-content:center;">
-          <span style="font-size:64px;">${['🍖','🍜','🥗','🍝'][i]}</span>
-        </div>
-        <div class="card-badge ${r.badgeClass}">${r.badge}</div>
-        <div class="card-fav" onclick="event.stopPropagation();toggleFav(this)">
-          <svg width="16" height="16" fill="none" stroke="#C4622D" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="card-top">
-          <div>
-            <div class="card-name">${r.name}</div>
-            <div class="card-cuisine">${r.cuisine}</div>
-          </div>
-          <div class="card-score">
-            <svg width="12" height="12" fill="#D4A853" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            ${r.rating}
-          </div>
-        </div>
-        <div class="card-meta">
-          <div class="card-meta-item">📍 ${r.distance}</div>
-          <div class="card-meta-item">⏱ ${r.time} yürüyüş</div>
-          <div class="card-meta-item">💬 ${r.reviews.toLocaleString()} yorum</div>
-        </div>
-        <div class="card-ai-note">
-          <div class="card-ai-note-label">✦ AI Analizi</div>
-          ${r.aiNote}
-        </div>
-        <div class="card-tags">${r.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
-      </div>
-      <div class="card-footer">
-        <div class="card-price">${r.price} <span>· ${r.priceRange}</span></div>
-        <button class="card-btn" onclick="event.stopPropagation();showToast('📞 Rezervasyon açılıyor...')">Rezervasyon</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderReviews() {
-  document.getElementById('reviewsStrip').innerHTML = demoReviews.map(r => `
-    <div class="review-card">
-      <div class="review-header">
-        <div class="review-avatar" style="background:${r.color}">${r.initial}</div>
-        <div>
-          <div class="review-name">${r.name}</div>
-          <div class="review-stars">${r.stars}</div>
-        </div>
-      </div>
-      <div class="review-text">${r.text}</div>
-    </div>
-  `).join('');
-}
-
-// ═══════════════════════════════════════════
-// AI SEARCH
-// ═══════════════════════════════════════════
-async function runAISearch() {
-  const q = document.getElementById('searchInput').value.trim() || 'restoran';
-  // Search nearby with the keyword via Places API
-  if (placesService) {
-    searchNearbyRestaurants(q);
-  } else {
-    showToast('⏳ Harita yükleniyor, lütfen bekleyin...');
-  }
-}
-
-// ═══════════════════════════════════════════
-// MODAL
-// ═══════════════════════════════════════════
-function openCard(i) { openRealCard(i); }
-
-function openRealCard(i) {
-  const p = realPlaces[i];
-  if (!p) return;
-
-  const rating = p.rating || '—';
-  const reviews = p.user_ratings_total || 0;
-  const isOpen = p.opening_hours ? (p.opening_hours.open_now ? '🟢 Şu an açık' : '🔴 Şu an kapalı') : '⚪ Bilinmiyor';
-  const photo = p.photos && p.photos[0] ? p.photos[0].getUrl({maxWidth:600,maxHeight:300}) : null;
-  const aiNote = document.getElementById(`ai-note-${i}`)?.textContent || 'Analiz ediliyor...';
+function openCard(i) {
+  const p = realPlaces[i]; if(!p) return;
+  const photo = p.photos?.[0]?.getUrl({maxWidth:800,maxHeight:400});
+  const open = p.opening_hours ? (p.opening_hours.open_now ? '🟢 Şu an açık' : '🔴 Şu an kapalı') : '';
+  const aiNote = document.getElementById('n'+i)?.textContent || '';
   const loc = p.geometry.location;
-  const mapsUrl = `https://maps.google.com/?q=${loc.lat()},${loc.lng()}`;
+  const mUrl = `https://maps.google.com/?q=${loc.lat()},${loc.lng()}`;
 
-  document.getElementById('modalContent').innerHTML = `
-    ${photo
-      ? `<img src="${photo}" style="width:calc(100% + 48px);margin:-20px -24px 16px;height:200px;object-fit:cover;">`
-      : `<div style="font-size:72px;text-align:center;margin-bottom:16px">🍽</div>`}
+  document.getElementById('modalBody').innerHTML = `
+    ${photo?`<img class="modal-img" src="${photo}" alt="${p.name}">`:''}
     <div class="modal-title">${p.name}</div>
-    <div class="modal-sub">${p.vicinity || ''}</div>
-    <div class="card-meta" style="margin-top:12px">
-      <div class="card-meta-item">⭐ ${rating} (${reviews.toLocaleString()} yorum)</div>
-      <div class="card-meta-item">${isOpen}</div>
+    <div class="modal-addr">${p.vicinity||''}</div>
+    <div class="modal-stats">
+      <span class="modal-stat">⭐ ${p.rating||'—'} (${(p.user_ratings_total||0).toLocaleString()} yorum)</span>
+      <span class="modal-stat">${open}</span>
+      ${p.price_level?`<span class="modal-stat">${'₺'.repeat(p.price_level)}</span>`:''}
     </div>
-    <div class="modal-section">
-      <div class="modal-section-title">AI Yorum Analizi</div>
-      <div class="modal-ai-analysis">
-        <h4>✦ Claude AI Tarafından Analiz Edildi</h4>
-        ${aiNote}
-      </div>
+    <div class="modal-ai-box">
+      <h4>✦ Claude AI Analizi</h4>
+      <p>${aiNote}</p>
     </div>
-    <div class="modal-cta">
-      <button class="modal-btn secondary" onclick="window.open('tel:','_self')">📞 Ara</button>
-      <button class="modal-btn primary" onclick="window.open('${mapsUrl}','_blank')">🗺 Yol Tarifi</button>
-    </div>
-  `;
-  document.getElementById('modalBackdrop').classList.add('open');
+    <div class="modal-btns">
+      <button class="modal-btn secondary" onclick="closeModal()">Kapat</button>
+      <button class="modal-btn primary" onclick="window.open('${mUrl}','_blank')">🗺 Yol Tarifi</button>
+    </div>`;
+  document.getElementById('modalBg').classList.add('open');
 }
 
-function closeModal(e) {
-  if (!e || e.target === document.getElementById('modalBackdrop'))
-    document.getElementById('modalBackdrop').classList.remove('open');
+function closeModal(e) { if(!e||e.target===document.getElementById('modalBg')) document.getElementById('modalBg').classList.remove('open'); }
+function goMaps(i) { const p=realPlaces[i]; if(!p) return; const l=p.geometry.location; window.open(`https://maps.google.com/?q=${l.lat()},${l.lng()}`,'_blank'); }
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if(placesService) searchPlaces(q);
+  else showToast('⏳ Harita yükleniyor...');
 }
 
-// ═══════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════
-function setFilter(el, name) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+function setFilter(el, kw) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  const keyword = name === 'Tümü' ? '' : name;
-  if (placesService) {
-    searchNearbyRestaurants(keyword);
-  }
-  showToast(`🔍 "${name}" filtresi uygulandı`);
+  if(placesService) searchPlaces(kw);
 }
 
 function toggleFav(btn) {
-  const svg = btn.querySelector('svg');
-  const filled = svg.getAttribute('fill') === '#C4622D';
-  svg.setAttribute('fill', filled ? 'none' : '#C4622D');
-  showToast(filled ? '💔 Favorilerden çıkarıldı' : '❤️ Favorilere eklendi');
+  const s = btn.querySelector('svg');
+  const on = s.getAttribute('fill') === '#C9A84C';
+  s.setAttribute('fill', on ? 'none' : '#C9A84C');
+  s.setAttribute('stroke', on ? 'rgba(237,232,223,0.7)' : '#C9A84C');
+  showToast(on ? '💔 Favorilerden çıkarıldı' : '✦ Favorilere eklendi');
 }
 
-function getLocation() {
-  // handled by onGoogleMapsReady
-}
-
-let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-
-// ═══════════════════════════════════════════
-// SETTINGS — API Key Yönetimi
-// ═══════════════════════════════════════════
+// Settings
 function openSettings() {
-  const gmaps = localStorage.getItem('sofra_gmaps_key') || '';
-  const claude = localStorage.getItem('sofra_claude_key') || '';
-  document.getElementById('gmapsInput').value = gmaps;
-  document.getElementById('claudeInput').value = claude;
-  updateKeyStatus('gmaps', gmaps);
-  updateKeyStatus('claude', claude);
-  document.getElementById('settingsOverlay').classList.add('open');
+  document.getElementById('gmKey').value = CONFIG.GM;
+  document.getElementById('clKey').value = CONFIG.CL;
+  showKeyStatus('gm', CONFIG.GM); showKeyStatus('cl', CONFIG.CL);
+  document.getElementById('settingsBg').classList.add('open');
 }
-
-function closeSettings() {
-  document.getElementById('settingsOverlay').classList.remove('open');
+function closeSettingsOut(e) { if(e.target===document.getElementById('settingsBg')) document.getElementById('settingsBg').classList.remove('open'); }
+function showKeyStatus(id, val) {
+  const el = document.getElementById(id+'St');
+  el.className = val&&val.length>10 ? 'key-ok' : 'key-missing';
+  el.textContent = val&&val.length>10 ? '✓ Key kayıtlı ('+val.substring(0,8)+'...)' : '✗ Key girilmedi';
 }
-
-function closeSettingsOutside(e) {
-  if (e.target === document.getElementById('settingsOverlay')) closeSettings();
-}
-
-function updateKeyStatus(type, val) {
-  const el = document.getElementById(type + 'Status');
-  if (val && val.length > 10) {
-    el.className = 'key-status ok';
-    el.innerHTML = '✅ Key kayıtlı (' + val.substring(0,8) + '...)';
-  } else {
-    el.className = 'key-status missing';
-    el.innerHTML = '⚠️ Key girilmedi';
-  }
-}
-
 function saveKeys() {
-  const gmaps = document.getElementById('gmapsInput').value.trim();
-  const claude = document.getElementById('claudeInput').value.trim();
-
-  if (!gmaps || !claude) {
-    showToast('⚠️ Her iki key de gerekli!');
-    return;
-  }
-
-  localStorage.setItem('sofra_gmaps_key', gmaps);
-  localStorage.setItem('sofra_claude_key', claude);
-  closeSettings();
-  showToast('✅ Key\'ler kaydedildi! Yükleniyor...');
-
-  // Reload maps with new key
+  const gm = document.getElementById('gmKey').value.trim();
+  const cl = document.getElementById('clKey').value.trim();
+  if(!gm||!cl) { showToast('⚠️ Her iki key gerekli!'); return; }
+  localStorage.setItem('s_gm', gm); localStorage.setItem('s_cl', cl);
+  document.getElementById('settingsBg').classList.remove('open');
+  showToast('✦ Kaydedildi, yeniden başlatılıyor...');
   setTimeout(() => location.reload(), 1200);
 }
 
-function checkKeysAndStart() {
-  const gmaps = localStorage.getItem('sofra_gmaps_key');
-  const claude = localStorage.getItem('sofra_claude_key');
-  if (!gmaps || !claude) {
-    // Show setup screen
-    setTimeout(() => openSettings(), 500);
-    return false;
-  }
-  return true;
+// Toast
+let tt;
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ═══════════════════════════════════════════
-// PWA — İkon üret & manifest oluştur
-// ═══════════════════════════════════════════
-(function setupPWA() {
-  // Canvas ile uygulama ikonunu üret
-  function makeIcon(size) {
-    const c = document.createElement('canvas');
-    c.width = c.height = size;
-    const ctx = c.getContext('2d');
-    // Arka plan
-    const grad = ctx.createLinearGradient(0, 0, size, size);
-    grad.addColorStop(0, '#1C1916');
-    grad.addColorStop(1, '#2D2520');
-    ctx.fillStyle = grad;
-    roundRect(ctx, 0, 0, size, size, size * 0.22);
-    ctx.fill();
-    // Rust çember
-    ctx.beginPath();
-    ctx.arc(size/2, size*0.42, size*0.28, 0, Math.PI*2);
-    ctx.fillStyle = '#C4622D';
-    ctx.fill();
-    // Yazı
-    ctx.fillStyle = '#FAF7F2';
-    ctx.font = `bold ${size*0.28}px Georgia, serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('S', size/2, size*0.42);
-    // Alt yazı
-    ctx.fillStyle = '#D4A853';
-    ctx.font = `600 ${size*0.095}px sans-serif`;
-    ctx.fillText('AI', size/2, size*0.72);
+// PWA Icons
+(function(){
+  function makeIcon(sz) {
+    const c=document.createElement('canvas'); c.width=c.height=sz;
+    const ctx=c.getContext('2d');
+    const g=ctx.createLinearGradient(0,0,sz,sz); g.addColorStop(0,'#1A1814'); g.addColorStop(1,'#2A2318');
+    ctx.fillStyle=g; rr(ctx,0,0,sz,sz,sz*.22); ctx.fill();
+    ctx.fillStyle='#C9A84C'; ctx.font=`600 ${sz*.32}px Georgia,serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('S',sz/2,sz*.44);
+    ctx.fillStyle='rgba(201,168,76,0.6)'; ctx.font=`500 ${sz*.1}px sans-serif`;
+    ctx.fillText('AI',sz/2,sz*.72);
     return c.toDataURL('image/png');
   }
-
-  function roundRect(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x+r, y);
-    ctx.lineTo(x+w-r, y); ctx.arcTo(x+w,y, x+w,y+r, r);
-    ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w,y+h, x+w-r,y+h, r);
-    ctx.lineTo(x+r, y+h); ctx.arcTo(x,y+h, x,y+h-r, r);
-    ctx.lineTo(x, y+r); ctx.arcTo(x,y, x+r,y, r);
-    ctx.closePath();
-  }
-
-  // Apple touch icon'ları DOM'a ekle
-  const sizes = [180, 152, 120];
-  sizes.forEach(s => {
-    const existing = document.querySelector(`link[sizes="${s}x${s}"]`);
-    const dataURL = makeIcon(s);
-    if (existing) { existing.href = dataURL; }
-    else {
-      const l = document.createElement('link');
-      l.rel = 'apple-touch-icon'; l.sizes = `${s}x${s}`; l.href = dataURL;
-      document.head.appendChild(l);
-    }
-    if (s === 180) {
-      const def = document.querySelector('link[rel="apple-touch-icon"]:not([sizes])');
-      if (def) def.href = dataURL;
-    }
+  function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
+  [180,152,120].forEach(s=>{
+    const l=document.createElement('link'); l.rel='apple-touch-icon'; l.sizes=s+'x'+s; l.href=makeIcon(s);
+    document.head.appendChild(l);
   });
-
-  // Manifest JSON blob olarak oluştur ve link'e ekle
-  const icon512 = makeIcon(512);
-  const icon192 = makeIcon(192);
-  const manifest = {
-    name: 'Sofra AI',
-    short_name: 'Sofra AI',
-    description: 'Yapay Zeka Destekli Akıllı Restoran Keşfi',
-    start_url: '.',
-    display: 'standalone',
-    orientation: 'portrait',
-    background_color: '#1C1916',
-    theme_color: '#1C1916',
-    lang: 'tr',
-    icons: [
-      { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
-      { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
-    ],
-    categories: ['food', 'lifestyle'],
-    screenshots: []
-  };
-  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
-  const blobURL = URL.createObjectURL(blob);
-  const mLink = document.querySelector('link[rel="manifest"]');
-  if (mLink) mLink.href = blobURL;
-
-  // Splash screen (iPad Pro 12.9" — 2048x2732)
-  function makeSplash(w, h) {
-    const c = document.createElement('canvas');
-    c.width = w; c.height = h;
-    const ctx = c.getContext('2d');
-    const g = ctx.createLinearGradient(0,0,w,h);
-    g.addColorStop(0,'#1C1916'); g.addColorStop(1,'#2D2520');
-    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
-    // İkon
-    const ic = parseInt(Math.min(w,h)*0.22);
-    const ix = (w-ic)/2, iy = h*0.35;
-    const g2 = ctx.createLinearGradient(ix,iy,ix+ic,iy+ic);
-    g2.addColorStop(0,'#C4622D'); g2.addColorStop(1,'#9B4520');
-    ctx.fillStyle = g2;
-    roundRect(ctx, ix, iy, ic, ic, ic*0.22); ctx.fill();
-    ctx.fillStyle = '#FAF7F2';
-    ctx.font = `bold ${ic*0.55}px Georgia,serif`;
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('S', w/2, iy+ic/2);
-    // Başlık
-    ctx.fillStyle = '#FAF7F2';
-    ctx.font = `bold ${Math.round(w*0.065)}px Georgia,serif`;
-    ctx.fillText('Sofra AI', w/2, iy+ic+ic*0.5);
-    ctx.fillStyle = '#6B6560';
-    ctx.font = `${Math.round(w*0.028)}px sans-serif`;
-    ctx.letterSpacing = '3px';
-    ctx.fillText('YAPAY ZEKA DESTEKLİ RESTORAN KEŞFİ', w/2, iy+ic+ic*0.85);
-    return c.toDataURL('image/png');
-  }
-
-  // iPad Pro 13" splash (portrait)
-  const splashURL = makeSplash(2048, 2732);
-  const splashLink = document.querySelector('link[rel="apple-touch-startup-image"]');
-  if (splashLink) splashLink.href = splashURL;
-
-  // Service Worker — offline destek
-  if ('serviceWorker' in navigator) {
-    const swCode = `
-const CACHE = 'sofra-ai-v1';
-const ASSETS = ['./', './restaurant-ai.html'];
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
-  self.skipWaiting();
-});
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
-  self.clients.claim();
-});
-self.addEventListener('fetch', e => {
-  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(()=>caches.match('./'))));
-});`;
-    const swBlob = new Blob([swCode], {type: 'application/javascript'});
-    const swURL = URL.createObjectURL(swBlob);
-    navigator.serviceWorker.register(swURL).catch(()=>{});
+  const m={name:'Sofra AI',short_name:'Sofra AI',display:'standalone',background_color:'#0F0E0C',theme_color:'#0F0E0C',start_url:'.',lang:'tr',icons:[{src:makeIcon(192),sizes:'192x192',type:'image/png'},{src:makeIcon(512),sizes:'512x512',type:'image/png'}]};
+  const bl=new Blob([JSON.stringify(m)],{type:'application/manifest+json'});
+  const ml=document.querySelector('link[rel="manifest"]')||document.createElement('link');
+  ml.rel='manifest'; ml.href=URL.createObjectURL(bl); document.head.appendChild(ml);
+  if('serviceWorker' in navigator){
+    const sw=`const C='sofra-v2';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./'])));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match('./'))));});`;
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});
   }
 })();
+
+// Enter key search
+document.getElementById('searchInput').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
 </script>
 
 </body>
