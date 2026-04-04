@@ -72,7 +72,7 @@ flex-shrink:0;
 .ai-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#C9A84C,#C4622D);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:13px;flex-shrink:0}
 .ai-ttl{font-size:11px;font-weight:600;color:#C9A84C}
 .ai-sub{font-size:10px;color:rgba(237,232,223,.35)}
-.ai-txt{font-size:12px;color:rgba(237,232,223,.7);line-height:1.65;overflow-y:auto;flex:1;-webkit-flex:1}
+.ai-txt{font-size:12px;color:rgba(237,232,223,.72);line-height:1.7;overflow-y:auto;flex:1;-webkit-flex:1}
 .ai-txt::-webkit-scrollbar{display:none}
 
 .sb-nav{padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.07);display:-webkit-flex;display:flex;gap:3px;flex-shrink:0;-webkit-flex-shrink:0}
@@ -212,7 +212,7 @@ flex-shrink:0;
   <button class="fl-btn on" onclick="setFilter(this,'')"><span class="fl-icon">🍽</span>Tümü</button>
   <button class="fl-btn" onclick="setFilter(this,'Türk')"><span class="fl-icon">🫕</span>Türk Mutfağı</button>
   <button class="fl-btn" onclick="setFilter(this,'İtalyan')"><span class="fl-icon">🍕</span>İtalyan</button>
-  <button class="fl-btn" onclick="setFilter(this,'Japon')"><span class="fl-icon">🍱</span>Japon</button>
+  <button class="fl-btn" onclick="setFilter(this,'Asya')"><span class="fl-icon">🍱</span>Asya</button>
   <button class="fl-btn" onclick="setFilter(this,'Vegan')"><span class="fl-icon">🌿</span>Vegan</button>
   <button class="fl-btn" onclick="setFilter(this,'kahvaltı')"><span class="fl-icon">☕</span>Kahvaltı</button>
   <button class="fl-btn" onclick="setFilter(this,'fine dining')"><span class="fl-icon">✨</span>Fine Dining</button>
@@ -400,12 +400,12 @@ function renderCards(places){
 
 async function aiAnalyze(places,kw){
   var list=places.slice(0,6).map(function(p,i){return (i+1)+'. '+p.name+' | Puan:'+(p.rating||'?')+' | '+(p.user_ratings_total||0)+' yorum | '+(p.opening_hours&&p.opening_hours.open_now?'Açık':'Kapalı');}).join('\n');
-  var prompt='Sen Sofra AI\'sın. Kullanıcı "'+(kw||'genel')+'" aradı.\n'+list+'\n\nSadece JSON döndür:\n{"genel":"2 cümle öneri","notlar":["not1","not2","not3","not4","not5","not6"]}';
+  var prompt='Sen Sofra AI adlı uzman bir Türk restoran kritiğisin. Kullanıcı "'+(kw||'genel')+'" aradı.\n\nGerçek veriler:\n'+list+'\n\nGörevin:\n1. "genel" alanı: En iyi 1-2 restoranı öner. Lezzet profili, fiyat-performans dengesi ve müşteri memnuniyeti hakkında 2-3 paragraf yaz. Her paragraf en az 2 cümle olsun. Samimi, uzman ve Türkçe yaz.\n2. "notlar" alanı: Her restoran için menü fiyatlaması, lezzet kalitesi ve müşteri yorumları temasını içeren 25-35 kelimelik detaylı değerlendirme yaz.\n\nSadece JSON döndür, başka hiçbir şey yazma:\n{"genel":"paragraf1\\n\\nparagraf2\\n\\nparagraf3","notlar":["detaylı not 1","detaylı not 2","detaylı not 3","detaylı not 4","detaylı not 5","detaylı not 6"]}';
   try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CONFIG.CL,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:prompt}]})});
+    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CONFIG.CL,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
     var d=await res.json();
     var j=JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
-    document.getElementById('aiTxt').textContent=j.genel;
+    document.getElementById('aiTxt').innerHTML=j.genel.replace(/\n\n/g,'<br><br>');
     document.getElementById('aiSub').textContent='Claude Sonnet · '+places.length+' mekan';
     j.notlar.forEach(function(n,i){var el=document.getElementById('n'+i);if(el)el.textContent=n;});
   }catch(e){
