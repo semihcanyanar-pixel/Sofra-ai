@@ -176,6 +176,12 @@ flex-shrink:0;
 .toast.show{transform:translateX(-50%) translateY(0)}
 </style>
 
+<!-- Firebase SDK -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-remote-config-compat.js"></script>
+
 </head>
 <body>
 
@@ -292,19 +298,52 @@ flex-shrink:0;
 <div class="toast" id="toast"></div>
 
 <script>
-var CONFIG={get GM(){return localStorage.getItem('s_gm')||''},get CL(){return localStorage.getItem('s_cl')||''}};
+
+// Firebase Remote Config
+var firebaseConfig = {
+  apiKey: "AIzaSyBeK50oyE25Vojl1YW1RcZayjw8CkejGtk",
+  authDomain: "sofra-ai.firebaseapp.com",
+  projectId: "sofra-ai",
+  storageBucket: "sofra-ai.firebasestorage.app",
+  messagingSenderId: "798437398228",
+  appId: "1:798437398228:web:3c1959c7d11d7b330f4d41"
+};
+firebase.initializeApp(firebaseConfig);
+var remoteConfig = firebase.remoteConfig();
+remoteConfig.settings.minimumFetchIntervalMillis = 3600000;
+remoteConfig.defaultConfig = {
+  ANTHROPIC_KEY: localStorage.getItem('s_cl') || ''
+};
+
+var CONFIG = {
+  get GM() { return localStorage.getItem('s_gm') || ''; },
+  get CL() { return remoteConfig.getValue('ANTHROPIC_KEY').asString() || localStorage.getItem('s_cl') || ''; }
+};
+
+// Fetch Remote Config on load
+async function initRemoteConfig() {
+  try {
+    await remoteConfig.fetchAndActivate();
+    console.log('Remote Config loaded');
+  } catch(e) {
+    console.log('Remote Config fallback to localStorage');
+  }
+}
+
 var googleMap=null,placesService=null,userLocation=null,realPlaces=[],mapMarkers=[];
 
 window.onload=function(){
-  setTimeout(function(){
-    document.getElementById('splash').classList.add('out');
+  initRemoteConfig().then(function(){
     setTimeout(function(){
-      var app=document.getElementById('app');
-      app.classList.add('on');
-      if(!CONFIG.GM||!CONFIG.CL){openSettings();return;}
-      loadMaps(CONFIG.GM);
-    },800);
-  },2400);
+      document.getElementById('splash').classList.add('out');
+      setTimeout(function(){
+        var app=document.getElementById('app');
+        app.classList.add('on');
+        if(!CONFIG.GM){openSettings();return;}
+        loadMaps(CONFIG.GM);
+      },800);
+    },2400);
+  });
 };
 
 function loadMaps(key){
@@ -483,7 +522,16 @@ function fav(btn){var s=btn.querySelector('svg');var on=s.getAttribute('fill')==
 function openSettings(){document.getElementById('gmK').value=CONFIG.GM;document.getElementById('clK').value=CONFIG.CL;kSt('gm',CONFIG.GM);kSt('cl',CONFIG.CL);document.getElementById('sbg').classList.add('open');}
 function cSetOut(e){if(e.target===document.getElementById('sbg'))document.getElementById('sbg').classList.remove('open');}
 function kSt(id,v){var el=document.getElementById(id+'S');el.className='kst '+(v&&v.length>10?'ok':'no');el.textContent=v&&v.length>10?'✓ Kayıtlı ('+v.substring(0,8)+'...)':'✗ Girilmedi';}
-function saveKeys(){var gm=document.getElementById('gmK').value.trim();var cl=document.getElementById('clK').value.trim();if(!gm||!cl){showToast('⚠️ Her iki key gerekli!');return;}localStorage.setItem('s_gm',gm);localStorage.setItem('s_cl',cl);document.getElementById('sbg').classList.remove('open');showToast('✦ Kaydedildi, yeniden başlatılıyor...');setTimeout(function(){location.reload();},1200);}
+function saveKeys(){
+  var gm=document.getElementById('gmK').value.trim();
+  var cl=document.getElementById('clK').value.trim();
+  if(!gm){showToast('⚠️ Google Maps key gerekli!');return;}
+  localStorage.setItem('s_gm',gm);
+  if(cl){localStorage.setItem('s_cl',cl);}
+  document.getElementById('sbg').classList.remove('open');
+  showToast('✦ Kaydedildi, yeniden başlatılıyor...');
+  setTimeout(function(){location.reload();},1200);
+}
 var tt;function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show');},2500);}
 document.getElementById('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
 </script>
