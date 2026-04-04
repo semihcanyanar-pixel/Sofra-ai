@@ -176,12 +176,6 @@ flex-shrink:0;
 .toast.show{transform:translateX(-50%) translateY(0)}
 </style>
 
-<!-- Firebase SDK -->
-
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-remote-config-compat.js"></script>
-
 </head>
 <body>
 
@@ -218,10 +212,13 @@ flex-shrink:0;
   <button class="fl-btn on" onclick="setFilter(this,'')"><span class="fl-icon">🍽</span>Tümü</button>
   <button class="fl-btn" onclick="setFilter(this,'Türk')"><span class="fl-icon">🫕</span>Türk Mutfağı</button>
   <button class="fl-btn" onclick="setFilter(this,'İtalyan')"><span class="fl-icon">🍕</span>İtalyan</button>
-  <button class="fl-btn" onclick="setFilter(this,'Asya mutfağı Çin Japon Kore Tayland')"><span class="fl-icon">🍱</span>Asya</button>
+  <button class="fl-btn" onclick="setFilter(this,'sushi ramen noodle wok dim sum pho pad thai bibimbap gyoza udon tempura miso')"><span class="fl-icon">🍱</span>Asya</button>
   <button class="fl-btn" onclick="setFilter(this,'vegan vejetaryen sağlıklı organik')"><span class="fl-icon">🌿</span>Vegan</button>
-  <button class="fl-btn" onclick="setFilter(this,'kahvaltı')"><span class="fl-icon">☕</span>Kahvaltı</button>
+  <button class="fl-btn" onclick="setFilter(this,'kahvaltı')"><span class="fl-icon">🍳</span>Kahvaltı</button>
   <button class="fl-btn" onclick="setFilter(this,'ekonomik uygun fiyat')"><span class="fl-icon">💰</span>Fiyat/Performans</button>
+  <button class="fl-btn" onclick="setFilter(this,'burger hamburger smash burger')"><span class="fl-icon">🍔</span>Burger</button>
+  <button class="fl-btn" onclick="setFilter(this,'tatlı pastane baklava dondurma cheesecake waffle dessert')"><span class="fl-icon">🍰</span>Tatlıcı</button>
+  <button class="fl-btn" onclick="setFilter(this,'specialty coffee espresso third wave kahve kavurma barista')"><span class="fl-icon">☕</span>Kahveci</button>
   <button class="fl-btn" onclick="setFilter(this,'fine dining')"><span class="fl-icon">✨</span>Fine Dining</button>
 </div>
 
@@ -299,36 +296,13 @@ flex-shrink:0;
 
 <script>
 
-// Firebase Remote Config
-var firebaseConfig = {
-  apiKey: "AIzaSyBeK50oyE25Vojl1YW1RcZayjw8CkejGtk",
-  authDomain: "sofra-ai.firebaseapp.com",
-  projectId: "sofra-ai",
-  storageBucket: "sofra-ai.firebasestorage.app",
-  messagingSenderId: "798437398228",
-  appId: "1:798437398228:web:3c1959c7d11d7b330f4d41"
-};
-firebase.initializeApp(firebaseConfig);
-var remoteConfig = firebase.remoteConfig();
-remoteConfig.settings.minimumFetchIntervalMillis = 3600000;
-remoteConfig.defaultConfig = {
-  ANTHROPIC_KEY: localStorage.getItem('s_cl') || ''
-};
-
+// API Config — keys injected by GitHub Actions
+var _k = ['CL_PLACEHOLDER'];
 var CONFIG = {
-  get GM() { return localStorage.getItem('s_gm') || ''; },
-  get CL() { return remoteConfig.getValue('ANTHROPIC_KEY').asString() || localStorage.getItem('s_cl') || ''; }
+  get GM() { return 'GM_PLACEHOLDER'; },
+  get CL() { return _k[0] || localStorage.getItem('s_cl') || ''; }
 };
-
-// Fetch Remote Config on load
-async function initRemoteConfig() {
-  try {
-    await remoteConfig.fetchAndActivate();
-    console.log('Remote Config loaded');
-  } catch(e) {
-    console.log('Remote Config fallback to localStorage');
-  }
-}
+function initRemoteConfig(){ return Promise.resolve(); }
 
 var googleMap=null,placesService=null,userLocation=null,realPlaces=[],mapMarkers=[];
 
@@ -463,14 +437,9 @@ async function aiAnalyze(places,kw){
     +'\n{"genel":"P1 metni\\n\\nP2 metni\\n\\nP3 metni","notlar":["not0","not1","not2","not3","not4","not5"]}';
 
   try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{
+    var res=await fetch('https://sofra-ai-proxy.semihcanyanar.workers.dev',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':CONFIG.CL,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1500,
