@@ -219,7 +219,7 @@ flex-shrink:0;
   <button class="fl-btn" onclick="setFilter(this,'burger hamburger smash burger')"><span class="fl-icon">🍔</span>Burger</button>
   <button class="fl-btn" onclick="setFilter(this,'pastane tatlı baklava dondurma dessert')"><span class="fl-icon">🍰</span>Tatlıcı</button>
   <button class="fl-btn" onclick="setFilter(this,'cafe kahve coffee')"><span class="fl-icon">☕</span>Kahveci</button>
-  <button class="fl-btn" onclick="setFilter(this,'fine dining')"><span class="fl-icon">✨</span>Fine Dining</button>
+  <button class="fl-btn" onclick="setFilter(this,'fine dining restaurant michelin tasting menu gastronomi')"><span class="fl-icon">✨</span>Fine Dining</button>
 </div>
 
 <div class="sb-ai">
@@ -369,7 +369,9 @@ function search(kw){
   var searchType = 'restaurant';
   if(kw==='cafe kahve coffee') searchType = 'cafe';
   if(kw==='pastane tatlı baklava dondurma dessert') searchType = 'bakery';
-  placesService.nearbySearch({location:userLocation,radius:2000,type:searchType,language:'tr',keyword:kw},function(res,st){
+  var searchRadius = 2000;
+  if(kw.indexOf('fine dining')!==-1) searchRadius = 5000;
+  placesService.nearbySearch({location:userLocation,radius:searchRadius,type:searchType,language:'tr',keyword:kw},function(res,st){
     if(st===google.maps.places.PlacesServiceStatus.OK&&res.length){
       realPlaces=res.slice(0,8);renderCards(realPlaces);addMarkers(realPlaces);aiAnalyze(realPlaces,kw);
     }else{document.getElementById('cardsGrid').innerHTML='<div class="loading">Sonuç bulunamadı.</div>';}
