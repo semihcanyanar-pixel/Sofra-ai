@@ -217,8 +217,8 @@ flex-shrink:0;
   <button class="fl-btn" onclick="setFilter(this,'kahvaltı')"><span class="fl-icon">🍳</span>Kahvaltı</button>
   <button class="fl-btn" onclick="setFilter(this,'ekonomik uygun fiyat')"><span class="fl-icon">💰</span>Fiyat/Performans</button>
   <button class="fl-btn" onclick="setFilter(this,'burger hamburger smash burger')"><span class="fl-icon">🍔</span>Burger</button>
-  <button class="fl-btn" onclick="setFilter(this,'tatlı pastane baklava dondurma cheesecake waffle dessert')"><span class="fl-icon">🍰</span>Tatlıcı</button>
-  <button class="fl-btn" onclick="setFilter(this,'specialty coffee espresso third wave kahve kavurma barista')"><span class="fl-icon">☕</span>Kahveci</button>
+  <button class="fl-btn" onclick="setFilter(this,'pastane tatlı baklava dondurma dessert')"><span class="fl-icon">🍰</span>Tatlıcı</button>
+  <button class="fl-btn" onclick="setFilter(this,'cafe kahve coffee')"><span class="fl-icon">☕</span>Kahveci</button>
   <button class="fl-btn" onclick="setFilter(this,'fine dining')"><span class="fl-icon">✨</span>Fine Dining</button>
 </div>
 
@@ -366,7 +366,10 @@ function search(kw){
   mapMarkers.forEach(function(m){m.setMap(null)});mapMarkers=[];
   document.getElementById('cardsGrid').innerHTML='<div class="loading"><div class="dot"><span></span><span></span><span></span></div><span>Restoranlar aranıyor...</span></div>';
   document.getElementById('aiTxt').innerHTML='<div class="dot"><span></span><span></span><span></span></div>';
-  placesService.nearbySearch({location:userLocation,radius:1500,type:'restaurant',language:'tr',keyword:kw},function(res,st){
+  var searchType = 'restaurant';
+  if(kw==='cafe kahve coffee') searchType = 'cafe';
+  if(kw==='pastane tatlı baklava dondurma dessert') searchType = 'bakery';
+  placesService.nearbySearch({location:userLocation,radius:2000,type:searchType,language:'tr',keyword:kw},function(res,st){
     if(st===google.maps.places.PlacesServiceStatus.OK&&res.length){
       realPlaces=res.slice(0,8);renderCards(realPlaces);addMarkers(realPlaces);aiAnalyze(realPlaces,kw);
     }else{document.getElementById('cardsGrid').innerHTML='<div class="loading">Sonuç bulunamadı.</div>';}
