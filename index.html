@@ -2,707 +2,665 @@
 
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>Sofra AI</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Sofra AI">
-<meta name="theme-color" content="#0F0E0C">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Kombin"/>
+<title>Kombin – Stil Asistanın</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+  import { getRemoteConfig, fetchAndActivate, getValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-remote-config.js";
+  const firebaseConfig = {
+    apiKey:"AIzaSyA8nrpyo6qdVDzeMg8E2p5GZxqrFjFgGfU",
+    authDomain:"kombin-d1288.firebaseapp.com",
+    projectId:"kombin-d1288",
+    storageBucket:"kombin-d1288.firebasestorage.app",
+    messagingSenderId:"685494136121",
+    appId:"1:685494136121:web:83cb5517f59d6ec9010ce8"
+  };
+  const app=initializeApp(firebaseConfig);
+  const auth=getAuth(app),db=getFirestore(app),storage=getStorage(app);
+  const remoteConfig=getRemoteConfig(app);
+  remoteConfig.settings.minimumFetchIntervalMillis=3600000;
+  window._fb={auth,db,storage,remoteConfig,signInAnonymously,onAuthStateChanged,
+    collection,addDoc,getDocs,deleteDoc,doc,ref,uploadBytes,getDownloadURL,fetchAndActivate,getValue};
+</script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{height:100%;background:#0F0E0C}
-body{height:100%;background:#0F0E0C;color:#EDE8DF;font-family:'Inter',sans-serif;overflow:hidden}
+:root{--bg:#111;--sf:#1c1c1c;--bd:#2c2c2c;--tx:#e8e8e8;--mu:#777;--ac:#e60023;--wh:#fff;--gap:10px;--rad:16px;--pw:272px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:'DM Sans',sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased}
+/* iPhone safe area */
+.shell{padding-top:env(safe-area-inset-top)}
+#mfab{bottom:calc(20px + env(safe-area-inset-bottom))}
+.lp{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+.shell{display:flex;height:100vh;width:100vw}
+.lp{width:var(--pw);min-width:var(--pw);background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;transition:transform .28s cubic-bezier(.4,0,.2,1)}
+.lpb{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:70px}
+.lpb::-webkit-scrollbar{width:3px}.lpb::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+.logo{padding:16px 16px 13px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.logo-i{width:32px;height:32px;background:var(--ac);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.logo-n{font-size:1rem;font-weight:600;color:var(--wh)}.logo-s{font-size:.65rem;color:var(--mu);margin-top:1px}
+.sb{padding:13px 13px 9px;border-bottom:1px solid var(--bd)}
+.sb textarea{width:100%;background:#252525;border:1px solid #333;border-radius:22px;padding:9px 15px;font-family:'DM Sans';font-size:.8rem;color:var(--tx);resize:none;outline:none;min-height:60px;line-height:1.45;transition:border-color .2s}
+.sb textarea::placeholder{color:var(--mu)}.sb textarea:focus{border-color:#555}
+.sgo{margin-top:7px;width:100%;background:var(--ac);color:#fff;border:none;border-radius:22px;padding:9px 0;font-size:.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .18s}
+.sgo:hover{opacity:.87}
+.spin{width:12px;height:12px;border:2px solid #fff3;border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;display:none}
+.sgo.ld .spin{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sec{padding:12px 13px 9px;border-bottom:1px solid var(--bd)}
+.sec-h{font-size:.63rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:9px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{padding:5px 11px;border-radius:18px;background:#252525;border:1px solid #333;font-size:.73rem;color:var(--mu);cursor:pointer;transition:all .15s;user-select:none}
+.chip:hover{border-color:#555;color:var(--tx)}.chip.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.gp{display:flex;gap:5px;padding:11px 13px 5px}
+.gp button{flex:1;padding:6px 0;border-radius:9px;background:#252525;border:1px solid #333;font-size:.73rem;color:var(--mu);cursor:pointer;transition:all .15s}
+.gp button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.apply{display:block;margin:9px 13px 13px;padding:11px 0;background:var(--ac);color:#fff;border:none;border-radius:22px;cursor:pointer;font-size:.82rem;font-weight:600;transition:opacity .18s;width:calc(100% - 26px);text-align:center}
+.apply:hover{opacity:.87}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.nav{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0}
+.ntabs{display:flex;background:#252525;border-radius:22px;padding:3px;gap:2px}
+.ntab{padding:6px 16px;border-radius:18px;border:none;background:transparent;font-family:'DM Sans';font-size:.78rem;color:var(--mu);cursor:pointer;transition:all .18s;font-weight:500;white-space:nowrap}
+.ntab.on{background:var(--wh);color:#111;font-weight:700}
+.pills{display:flex;gap:5px;flex:1;overflow:hidden;flex-wrap:nowrap}
+.pill{padding:4px 10px;border-radius:13px;background:#2a2a2a;font-size:.7rem;color:var(--tx);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.pill button{background:none;border:none;color:var(--mu);cursor:pointer;font-size:9px}
+.panel{display:none;flex:1;overflow-y:auto;padding:var(--gap)}.panel.on{display:block}
+.panel::-webkit-scrollbar{width:4px}.panel::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:4px}
+.pgrid{column-gap:var(--gap)}.pgrid.c1{columns:1}.pgrid.c2{columns:2}.pgrid.c3{columns:3}.pgrid.c4{columns:4}
+.pcard{break-inside:avoid;margin-bottom:var(--gap);border-radius:var(--rad);overflow:hidden;position:relative;cursor:pointer;background:#2a2a2a;transition:transform .18s}
+.pcard:hover{transform:scale(1.015)}
+.pcard img{width:100%;display:block;object-fit:cover}
+.pcard.h-s img{height:200px}
+.pcard.h-m img{height:280px}
+.pcard.h-l img{height:360px}
+.pcard.h-xl img{height:440px}
+.pov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 45%);opacity:0;transition:opacity .2s;border-radius:var(--rad);display:flex;flex-direction:column;justify-content:flex-end;padding:11px}
+.pcard:hover .pov{opacity:1}.ptitle{color:#fff;font-size:.73rem;font-weight:500}
+.pstar{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:14px;border:1px solid rgba(255,255,255,.12)}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:62vh;gap:10px}
+.empty .ico{font-size:2.8rem;opacity:.3}.empty p{font-size:.88rem;color:var(--mu)}
+.empty small{font-size:.75rem;color:#444;text-align:center;max-width:200px;line-height:1.5}
+.gtbar{display:flex;align-items:center;gap:7px;margin-bottom:11px;flex-wrap:wrap}
+.gsel{flex:1;padding:7px 13px;border-radius:18px;border:1px solid var(--bd);background:#252525;color:var(--tx);font-size:.78rem;outline:none;min-width:0}
+.gbx{padding:7px 13px;border-radius:18px;border:none;background:var(--ac);color:#fff;font-size:.78rem;cursor:pointer;font-weight:600;transition:opacity .18s;white-space:nowrap}
+.gbx:hover{opacity:.85}.gbx.s{background:#2a2a2a;color:var(--tx)}.gbx.s:hover{background:#333}
+.atabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.ach{padding:4px 12px;border-radius:18px;border:1px solid var(--bd);background:#252525;font-size:.72rem;color:var(--mu);cursor:pointer;transition:all .15s}
+.ach.on{background:var(--wh);color:#111;border-color:var(--wh);font-weight:700}
+.ulim{font-size:.7rem;color:var(--mu);margin-bottom:7px}
+.gg{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
+.gi{border-radius:11px;overflow:hidden;background:#2a2a2a;position:relative;cursor:pointer;aspect-ratio:3/4;transition:transform .17s}
+.gi:hover{transform:scale(1.025)}.gi img{width:100%;height:100%;object-fit:cover;display:block}
+.gi-alb{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.75));padding:18px 7px 6px;font-size:.65rem;color:#ccc}
+.gd{position:absolute;top:5px;right:5px;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);border:none;border-radius:50%;width:25px;height:25px;cursor:pointer;font-size:11px;display:none;align-items:center;justify-content:center;color:#fff}
+.gi:hover .gd{display:flex}
+.uz{border:2px dashed #2e2e2e;border-radius:13px;padding:28px;text-align:center;cursor:pointer;color:var(--mu);font-size:.8rem;transition:all .2s}
+.uz:hover{border-color:#444;background:#1e1e1e}.uz .ui{font-size:1.8rem;margin-bottom:5px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:500;padding:18px;backdrop-filter:blur(10px)}
+.md{background:var(--sf);border-radius:18px;padding:20px;max-width:380px;width:100%;box-shadow:0 20px 70px rgba(0,0,0,.7);border:1px solid var(--bd)}
+.md h3{font-size:1.05rem;font-weight:600;color:var(--wh);margin-bottom:11px}
+.md input,.md select{width:100%;padding:8px 13px;border:1px solid var(--bd);border-radius:11px;font-size:.82rem;outline:none;margin-bottom:9px;color:var(--tx);background:#252525;font-family:'DM Sans'}
+.mdb{display:flex;gap:7px;margin-top:4px}
+.mdb button{flex:1;padding:9px 0;border-radius:11px;border:none;font-size:.82rem;cursor:pointer;font-weight:600;font-family:'DM Sans'}
+.mdb .ok{background:var(--ac);color:#fff}.mdb .cc{background:#2a2a2a;color:var(--tx)}
+.md img{width:100%;border-radius:11px;max-height:68vh;object-fit:contain}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#2c2c2c;color:var(--wh);padding:9px 20px;border-radius:22px;font-size:.78rem;z-index:1000;white-space:nowrap;border:1px solid #3a3a3a;animation:fup .28s ease;pointer-events:none}
+@keyframes fup{from{opacity:0;transform:translateX(-50%) translateY(9px)}}
+/* LOADING SCREEN */
+#ls{position:fixed;inset:0;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+#ls.hide{opacity:0;pointer-events:none}
+.ls-shapes{position:absolute;inset:0;overflow:hidden}
+.ls-shape{position:absolute;font-size:1.8rem;animation:float 2.5s ease-in-out infinite}
+@keyframes float{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(-120vh) rotate(360deg);opacity:0}}
+.ls-logo{display:flex;align-items:center;gap:4px;margin-bottom:8px}
+.ls-p{width:56px;height:56px;background:#e60023;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:#fff;font-family:Georgia,serif;box-shadow:0 4px 20px rgba(230,0,35,.5)}
+.ls-text{font-size:3rem;font-weight:800;color:#fff;font-family:Georgia,serif;letter-spacing:-.03em}
+.ls-sub{font-size:.85rem;color:#666;letter-spacing:.1em;text-transform:uppercase}
 
-/* SPLASH */
-#splash{position:fixed;inset:0;z-index:999;background:#0F0E0C;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;transition:opacity .8s}
-#splash.out{opacity:0;pointer-events:none}
-.s-logo{font-family:‘Cormorant Garamond’,serif;font-size:60px;font-weight:600;color:#F5F0E8;letter-spacing:-1px;animation:fu .9s ease both}
-.s-logo i{color:#C9A84C;font-style:italic}
-.s-tag{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(237,232,223,0.4);margin-top:10px;animation:fu .9s .2s ease both}
-.s-bar{width:48px;height:1px;background:rgba(255,255,255,.1);margin-top:48px;overflow:hidden;animation:fu .9s .3s ease both}
-.s-bar::after{content:’’;display:block;height:100%;width:0;background:#C9A84C;animation:bl 1.4s .6s ease forwards}
-@keyframes bl{to{width:100%}}
-@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-/* APP — critical: use table layout for iPad Safari compatibility */
-#app{display:none;width:100%;height:100dvh;overflow:hidden}
-#app.on{display:-webkit-flex;display:flex;-webkit-flex-direction:row;flex-direction:row}
-
-/* SIDEBAR */
-#sidebar{
-width:272px;min-width:272px;max-width:272px;
-height:100dvh;
-background:#1A1814;
-border-right:1px solid rgba(255,255,255,.07);
-display:-webkit-flex;display:flex;
--webkit-flex-direction:column;flex-direction:column;
-overflow:hidden;
-flex-shrink:0;
--webkit-flex-shrink:0;
+#mfab{display:none;position:fixed;bottom:20px;left:20px;z-index:200;background:var(–ac);color:#fff;border:none;border-radius:50%;width:46px;height:46px;font-size:1.15rem;cursor:pointer;box-shadow:0 4px 18px rgba(230,0,35,.45);align-items:center;justify-content:center}
+#mbk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99}
+@media(max-width:900px){
+.lp{position:fixed;left:0;top:0;bottom:0;z-index:100;transform:translateX(-100%);width:280px;min-width:280px}
+.lp.open{transform:translateX(0)}
+#mbk.open{display:block}
+#mfab{display:flex}
+.pills{display:none}
 }
-.sb-logo{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
-.sb-logo h1{font-family:‘Cormorant Garamond’,serif;font-size:26px;font-weight:600;color:#F5F0E8}
-.sb-logo h1 i{color:#C9A84C;font-style:italic}
-.sb-logo p{font-size:10px;color:rgba(237,232,223,.4);margin-top:3px;letter-spacing:.5px}
-
-.sb-loc-wrap{border-bottom:1px solid rgba(255,255,255,.07)}
-.sb-loc{padding:10px 20px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:7px;font-size:12px;color:rgba(237,232,223,.45);cursor:pointer}
-.sb-loc svg{color:#C9A84C;flex-shrink:0}
-.travel-modes{display:-webkit-flex;display:flex;gap:8px;padding:8px 16px 12px}
-.tm-btn{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;gap:5px;padding:7px;border-radius:9px;border:1px solid rgba(255,255,255,.07);background:transparent;color:rgba(237,232,223,.4);font-size:11px;font-weight:500;cursor:pointer;font-family:‘Inter’,sans-serif;transition:all .15s}
-.tm-btn.active{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.4);color:#C9A84C}
-.tm-btn:active{transform:scale(.97)}
-
-.sb-loc svg{color:#C9A84C;flex-shrink:0;-webkit-flex-shrink:0}
-
-.sb-search{padding:14px;border-bottom:1px solid rgba(255,255,255,.07)}
-.sb-sbox{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:7px;background:#232018;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:9px 12px;transition:border-color .2s}
-.sb-sbox:focus-within{border-color:#C9A84C}
-.sb-sbox svg{color:#C9A84C;flex-shrink:0}
-.sb-sbox input{flex:1;-webkit-flex:1;background:transparent;border:none;outline:none;font-family:‘Inter’,sans-serif;font-size:13px;color:#EDE8DF}
-.sb-sbox input::placeholder{color:rgba(237,232,223,.35)}
-.sb-btn{background:#C9A84C;color:#0F0E0C;border:none;border-radius:7px;padding:6px 11px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
-.sb-btn:active{background:#E8C96A}
-
-.sb-filters{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.07);overflow-y:auto;max-height:280px}
-.sb-filters::-webkit-scrollbar{display:none}
-.fl-label{font-size:9px;letter-spacing:2px;color:rgba(237,232,223,.3);text-transform:uppercase;margin-bottom:6px;padding-left:6px}
-.fl-btn{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:9px;width:100%;padding:9px 10px;border-radius:9px;font-size:13px;color:rgba(237,232,223,.45);cursor:pointer;border:none;background:transparent;text-align:left;transition:all .15s;font-family:‘Inter’,sans-serif}
-.fl-btn:active,.fl-btn:hover{background:#232018;color:#EDE8DF}
-.fl-btn.on{background:rgba(201,168,76,.12);color:#C9A84C}
-.fl-icon{width:18px;text-align:center}
-
-.sb-ai{margin:12px;border-radius:13px;background:linear-gradient(150deg,#1E1A14,#2A2318);border:1px solid rgba(201,168,76,.18);padding:14px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:9px;flex:1;-webkit-flex:1;min-height:120px;overflow:hidden}
-.ai-head{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px}
-.ai-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#C9A84C,#C4622D);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:13px;flex-shrink:0}
-.ai-ttl{font-size:11px;font-weight:600;color:#C9A84C}
-.ai-sub{font-size:10px;color:rgba(237,232,223,.35)}
-.ai-txt{font-size:12px;color:rgba(237,232,223,.82);line-height:1.7;overflow-y:auto;flex:1;-webkit-flex:1;min-height:0;word-break:break-word}
-.ai-txt::-webkit-scrollbar{display:none}
-
-.sb-nav{padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.07);display:-webkit-flex;display:flex;gap:3px;flex-shrink:0;-webkit-flex-shrink:0}
-.nb{flex:1;-webkit-flex:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-align-items:center;align-items:center;gap:3px;padding:8px 4px;border-radius:9px;border:none;background:transparent;color:rgba(237,232,223,.4);cursor:pointer;font-size:9px;letter-spacing:.3px;font-family:‘Inter’,sans-serif;transition:all .15s}
-.nb:active,.nb:hover{background:#232018;color:#EDE8DF}
-.nb.on{color:#C9A84C}
-.nb svg{width:17px;height:17px}
-
-/* MAIN */
-#main{flex:1;-webkit-flex:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;overflow:hidden;min-width:0}
-
-#mapWrap{height:240px;flex-shrink:0;-webkit-flex-shrink:0;background:#1A1814;border-bottom:1px solid rgba(255,255,255,.07);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;color:rgba(237,232,223,.4);font-size:13px;gap:8px}
-#googleMap{height:240px;flex-shrink:0;-webkit-flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.07)}
-
-.cards-grid{flex:1;-webkit-flex:1;overflow-y:auto;padding:16px;display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:14px;-webkit-align-content:start;align-content:start}
-.cards-grid::-webkit-scrollbar{width:3px}
-.cards-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
-
-.loading{width:100%;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;padding:60px 20px;gap:12px;color:rgba(237,232,223,.4);font-size:13px}
-
-/* TYPING */
-.dot{display:-webkit-flex;display:flex;gap:4px;-webkit-align-items:center;align-items:center}
-.dot span{width:5px;height:5px;border-radius:50%;background:#C9A84C;animation:bk 1.2s infinite}
-.dot span:nth-child(2){animation-delay:.2s}
-.dot span:nth-child(3){animation-delay:.4s}
-@keyframes bk{0%,80%,100%{opacity:.2;transform:scale(1)}40%{opacity:1;transform:scale(1.3)}}
-
-/* CARD */
-.card{background:#1A1814;border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;width:calc(50% - 7px)}
-@media(max-width:700px){.card{width:100%}}
-.card:active{transform:scale(.99)}
-.card:hover{transform:translateY(-2px);border-color:rgba(201,168,76,.3);box-shadow:0 8px 28px rgba(0,0,0,.5)}
-.card.top{border-color:rgba(201,168,76,.35)}
-
-.c-img{height:130px;position:relative;overflow:hidden;background:#232018}
-.c-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;filter:brightness(.9)}
-.card:hover .c-img img{transform:scale(1.04)}
-.c-emoji{width:100%;height:100%;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,#232018,#1A1814)}
-.c-badge{position:absolute;top:9px;left:9px;background:#C9A84C;color:#0F0E0C;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:.8px;text-transform:uppercase}
-.c-badge.g{background:#4A9B6F;color:#fff}
-.c-fav{position:absolute;top:8px;right:8px;width:27px;height:27px;border-radius:50%;background:rgba(15,14,12,.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:all .2s}
-.c-fav svg{width:12px;height:12px}
-
-.c-body{padding:12px}
-.c-name{font-family:‘Cormorant Garamond’,serif;font-size:17px;font-weight:600;color:#EDE8DF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
-.c-type{font-size:10px;color:rgba(237,232,223,.4);margin-top:2px;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.c-row{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;margin-top:8px}
-.c-rate{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:4px;font-size:13px;font-weight:600}
-.c-rate svg{width:11px;height:11px;fill:#C9A84C}
-.c-cnt{font-size:10px;color:rgba(237,232,223,.4)}
-.c-open{font-size:10px;font-weight:500;color:#4A9B6F}
-.c-closed{font-size:10px;font-weight:500;color:#C44A4A}
-
-.c-ai{margin-top:9px;padding:8px 10px;background:rgba(201,168,76,.08);border-left:2px solid #C9A84C;border-radius:0 7px 7px 0;font-size:11px;color:rgba(237,232,223,.85);line-height:1.5;min-height:32px}
-.c-ail{font-size:9px;color:#C9A84C;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
-
-.c-foot{padding:8px 12px 11px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between}
-.c-price{font-size:11px;color:rgba(237,232,223,.4)}
-.c-dir{background:#C9A84C;color:#0F0E0C;border:none;border-radius:7px;padding:6px 11px;font-size:11px;font-weight:600;cursor:pointer;font-family:‘Inter’,sans-serif}
-.c-dir:active{background:#E8C96A}
-
-/* MODAL */
-.mbg{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.75);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:none;-webkit-align-items:flex-end;align-items:flex-end}
-.mbg.open{display:-webkit-flex;display:flex;animation:fi .3s ease}
-@keyframes fi{from{opacity:0}to{opacity:1}}
-.msh{background:#1A1814;border-radius:20px 20px 0 0;width:100%;max-height:82dvh;overflow-y:auto;animation:su .4s cubic-bezier(.34,1.56,.64,1)}
-@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.mh{width:36px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin:12px auto}
-.mb{padding:16px 22px 40px}
-.m-img{width:calc(100% + 44px);margin:-4px -22px 18px;height:210px;object-fit:cover;display:block}
-.m-title{font-family:‘Cormorant Garamond’,serif;font-size:26px;font-weight:600}
-.m-addr{font-size:13px;color:rgba(237,232,223,.45);margin-top:4px}
-.m-stats{display:-webkit-flex;display:flex;gap:14px;margin-top:12px;-webkit-flex-wrap:wrap;flex-wrap:wrap}
-.m-stat{font-size:12px;color:rgba(237,232,223,.45)}
-.m-ai{margin-top:18px;padding:14px;background:linear-gradient(135deg,#1E1A14,#2A2318);border:1px solid rgba(201,168,76,.2);border-radius:12px}
-.m-ai h4{font-size:9px;color:#C9A84C;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px}
-.m-ai p{font-size:13px;color:rgba(237,232,223,.8);line-height:1.65}
-.m-btns{display:-webkit-flex;display:flex;gap:10px;margin-top:18px}
-.m-btn{-webkit-flex:1;flex:1;padding:13px;border-radius:11px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:‘Inter’,sans-serif}
-.m-btn.p{background:#C9A84C;color:#0F0E0C}
-.m-btn.s{background:#232018;color:#EDE8DF;border:1px solid rgba(255,255,255,.07)}
-
-/* SETTINGS */
-.cbg{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;-webkit-align-items:flex-end;align-items:flex-end}.cbg.open{display:-webkit-flex;display:flex;animation:fi .3s ease}.csh{background:#1A1814;border-radius:20px 20px 0 0;width:100%;padding:0 22px calc(32px + env(safe-area-inset-bottom));animation:su .4s cubic-bezier(.34,1.56,.64,1)}.city-result{background:#232018;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:11px 14px;cursor:pointer;font-size:13px;color:#EDE8DF;transition:background .15s}.city-result:active{background:#2D2820}
-.sbg{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;-webkit-align-items:flex-end;align-items:flex-end}
-.sbg.open{display:-webkit-flex;display:flex;animation:fi .3s ease}
-.ssh{background:#1A1814;border-radius:20px 20px 0 0;width:100%;padding:0 22px calc(32px + env(safe-area-inset-bottom));animation:su .4s cubic-bezier(.34,1.56,.64,1)}
-.sh{width:36px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin:12px auto 18px}
-.s-title{font-family:‘Cormorant Garamond’,serif;font-size:24px;font-weight:600;margin-bottom:5px}
-.s-sub{font-size:12px;color:rgba(237,232,223,.4);line-height:1.5;margin-bottom:20px}
-.fl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#C9A84C;margin-bottom:6px}
-.fi-in{width:100%;background:#232018;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:11px 13px;font-size:13px;font-family:monospace;color:#EDE8DF;outline:none;margin-bottom:4px;transition:border-color .2s}
-.fi-in:focus{border-color:#C9A84C}
-.kst{font-size:11px;margin-bottom:12px}
-.kst.ok{color:#4A9B6F}.kst.no{color:#C44A4A}
-.s-save{width:100%;background:#C9A84C;color:#0F0E0C;border:none;border-radius:11px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:‘Inter’,sans-serif;margin-top:6px}
-.s-save:active{background:#E8C96A}
-.s-note{font-size:11px;color:rgba(237,232,223,.3);text-align:center;margin-top:10px;line-height:1.6}
-
-/* TOAST */
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:#232018;color:#EDE8DF;border:1px solid rgba(255,255,255,.1);padding:10px 18px;border-radius:10px;font-size:13px;z-index:999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.6)}
-.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:600px){
+.pgrid.c3,.pgrid.c4{columns:2}
+.pgrid.c2{columns:2}
+.gg{grid-template-columns:repeat(2,1fr)}
+.nav{padding:8px 10px;gap:6px}
+.ntab{padding:5px 10px;font-size:.72rem}
+#mfab{bottom:24px;left:14px;width:50px;height:50px;font-size:1.3rem}
+.md{margin:0 8px;padding:16px}
+.ls-text{font-size:2.2rem}
+.ls-p{width:46px;height:46px;font-size:1.6rem}
+}
+@media(max-width:390px){
+.pgrid.c3,.pgrid.c4,.pgrid.c2{columns:1}
+.ntab{padding:4px 8px;font-size:.68rem}
+}
 </style>
 
 </head>
 <body>
-
-<div id="splash">
-  <div class="s-logo">Sofra <i>AI</i></div>
-  <div class="s-tag">Yapay Zeka Destekli Restoran Keşfi</div>
-  <div class="s-bar"></div>
+<div id="ls">
+  <div class="ls-shapes" id="ls-shapes"></div>
+  <div class="ls-logo">
+    <div class="ls-p">K</div>
+    <div class="ls-text">ombin</div>
+  </div>
+  <div class="ls-sub">Stil Asistanın</div>
 </div>
-
-<div id="app">
-  <!-- SIDEBAR -->
-  <div id="sidebar">
-    <div class="sb-logo">
-      <h1>Sofra <i>AI</i></h1>
-      <p>Akıllı Restoran Rehberi</p>
+<div class="shell" id="app" style="display:none">
+  <div class="lp" id="sidebar">
+    <div class="logo">
+      <div class="logo-i">👗</div>
+      <div><div class="logo-n">Kombin</div><div class="logo-s">Stil Asistanın ✨</div></div>
     </div>
-
-```
-<div class="sb-loc-wrap">
-  <div class="sb-loc" onclick="openCitySearch()">
-    <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-    <span id="locText">Konum alınıyor...</span>
-    <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-left:auto;opacity:.5"><path d="M19 9l-7 7-7-7"/></svg>
-  </div>
-  <div class="travel-modes">
-    <button class="tm-btn active" id="tm-walk" onclick="setTravelMode('walk')">
-      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>
-      <span>Yürüyüş</span>
-    </button>
-    <button class="tm-btn" id="tm-drive" onclick="setTravelMode('drive')">
-      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
-      <span>Araç</span>
-    </button>
-  </div>
-</div>
-
-<div class="sb-search">
-  <div class="sb-sbox">
-    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input id="searchInput" type="text" placeholder="Mutfak, yemek, atmosfer...">
-    <button class="sb-btn" onclick="doSearch()">Ara</button>
-  </div>
-</div>
-
-<div class="sb-filters">
-  <div class="fl-label">Filtreler</div>
-  <button class="fl-btn on" onclick="setFilter(this,'')"><span class="fl-icon">🍽</span>Tümü</button>
-  <button class="fl-btn" onclick="setFilter(this,'Türk')"><span class="fl-icon">🫕</span>Türk Mutfağı</button>
-  <button class="fl-btn" onclick="setFilter(this,'İtalyan')"><span class="fl-icon">🍕</span>İtalyan</button>
-  <button class="fl-btn" onclick="setFilter(this,'sushi ramen noodle wok dim sum pho pad thai bibimbap gyoza udon tempura miso')"><span class="fl-icon">🍱</span>Asya</button>
-  <button class="fl-btn" onclick="setFilter(this,'vegan vejetaryen sağlıklı organik')"><span class="fl-icon">🌿</span>Vegan</button>
-  <button class="fl-btn" onclick="setFilter(this,'kahvaltı')"><span class="fl-icon">🍳</span>Kahvaltı</button>
-  <button class="fl-btn" onclick="setFilter(this,'ekonomik uygun fiyat')"><span class="fl-icon">💰</span>Fiyat/Performans</button>
-  <button class="fl-btn" onclick="setFilter(this,'burger hamburger smash burger')"><span class="fl-icon">🍔</span>Burger</button>
-  <button class="fl-btn" onclick="setFilter(this,'pastane tatlı baklava dondurma dessert')"><span class="fl-icon">🍰</span>Tatlıcı</button>
-  <button class="fl-btn" onclick="setFilter(this,'cafe kahve coffee')"><span class="fl-icon">☕</span>Kahveci</button>
-  <button class="fl-btn" onclick="setFilter(this,'fine dining restaurant michelin tasting menu gastronomi')"><span class="fl-icon">✨</span>Fine Dining</button>
-  <button class="fl-btn" onclick="setLocalFood()"><span class="fl-icon">🏳️</span>Lokal Yemekler</button>
-</div>
-
-<div class="sb-ai">
-  <div class="ai-head">
-    <div class="ai-icon">✦</div>
-    <div>
-      <div class="ai-ttl">AI Analizi</div>
-      <div class="ai-sub" id="aiSub">Claude Sonnet</div>
+    <div class="lpb">
+      <div class="sb">
+        <textarea id="q" placeholder="Kadın kış spor kombin…" rows="3"></textarea>
+        <button class="sgo" id="sgo" onclick="doSearch()">
+          <span class="spin"></span>
+          <span id="slbl">🔍 AI ile Ara</span>
+        </button>
+      </div>
+      <div class="sec"><div class="sec-h">👗 Tarz</div>
+        <div class="chips" id="cs">
+          <div class="chip" data-v="Casual">Casual</div>
+          <div class="chip" data-v="Smart Casual">Smart Casual</div>
+          <div class="chip" data-v="Spor">Spor</div>
+          <div class="chip" data-v="Klasik">Klasik</div>
+          <div class="chip" data-v="Boho">Boho</div>
+        </div>
+      </div>
+      <div class="sec"><div class="sec-h">🧍 Kimler için</div>
+        <div class="chips" id="cg">
+          <div class="chip" data-v="Kadın">Kadın</div>
+          <div class="chip" data-v="Erkek">Erkek</div>
+          <div class="chip" data-v="Kız Çocuk">Kız Çocuk</div>
+          <div class="chip" data-v="Erkek Çocuk">Erkek Çocuk</div>
+        </div>
+      </div>
+      <div class="sec"><div class="sec-h">🌿 Mevsim</div>
+        <div class="chips" id="cm">
+          <div class="chip" data-v="İlkbahar">İlkbahar</div>
+          <div class="chip" data-v="Yaz">Yaz</div>
+          <div class="chip" data-v="Sonbahar">Sonbahar</div>
+          <div class="chip" data-v="Kış">Kış</div>
+        </div>
+      </div>
+      <div class="sec-h" style="padding:12px 13px 6px">📐 Izgara</div>
+      <div class="gp" id="gp">
+        <button onclick="setGrid(1)">1</button>
+        <button onclick="setGrid(2)">2</button>
+        <button class="on" onclick="setGrid(3)">3</button>
+        <button onclick="setGrid(4)">4</button>
+      </div>
+      <button class="apply" onclick="applyFilters()">✨ Kombinleri Göster</button>
     </div>
   </div>
-  <div class="ai-txt" id="aiTxt"><div class="dot"><span></span><span></span><span></span></div></div>
-</div>
-
-<div class="sb-nav">
-  <button class="nb on">
-    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-    Keşfet
-  </button>
-  <button class="nb" onclick="googleMap&&googleMap.setCenter(userLocation)">
-    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-    Harita
-  </button>
-  <button class="nb" onclick="showToast('❤️ Favorileriniz')">
-    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-    Favoriler
-  </button>
-  <button class="nb" onclick="openSettings()">
-    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-    Ayarlar
-  </button>
-</div>
-```
-
-  </div>
-
-  <!-- MAIN -->
-
-  <div id="main">
-    <div id="mapWrap">
-      <div class="dot"><span></span><span></span><span></span></div>
-      Harita yükleniyor...
+  <div class="main">
+    <div class="nav">
+      <div class="ntabs">
+        <button class="ntab on" onclick="switchTab('discover',this)">🏠 Keşfet</button>
+        <button class="ntab" onclick="switchTab('gallery',this)">👚 Gardrobum</button>
+      </div>
+      <div class="pills" id="pills"></div>
     </div>
-    <div class="cards-grid" id="cardsGrid">
-      <div class="loading"><div class="dot"><span></span><span></span><span></span></div><span>Restoranlar aranıyor...</span></div>
+    <div class="panel on" id="tab-discover">
+      <div class="empty" id="empty"><div class="ico">✨</div><p>Kombinler burada görünecek</p><small>Sol panelden filtre seç veya arama yap</small></div>
+      <div class="pgrid c3" id="pgrid"></div>
+    </div>
+    <div class="panel" id="tab-gallery">
+      <div class="gtbar">
+        <select class="gsel" id="alb-sel"></select>
+        <button class="gbx s" onclick="openAlbumModal()">+ Albüm</button>
+        <button class="gbx" onclick="openUpload()">📷 Ekle</button>
+      </div>
+      <div class="atabs" id="atabs"></div>
+      <div class="ulim" id="ulim">0 / 50 fotoğraf</div>
+      <div class="gg" id="gg"></div>
     </div>
   </div>
 </div>
-
-<!-- MODAL -->
-
-<div class="mbg" id="mbg" onclick="cModal(event)">
-  <div class="msh"><div class="mh"></div><div class="mb" id="mbody"></div></div>
 </div>
-
-<!-- CITY SEARCH -->
-
-<div class="cbg" id="cbg" onclick="cCityOut(event)">
-  <div class="csh">
-    <div class="sh"></div>
-    <div class="s-title">📍 Konum Seç</div>
-    <div class="s-sub">Otomatik konumunu kullan veya şehir ara.</div>
-    <button class="s-save" style="margin-bottom:12px" onclick="useMyLocation()">📡 Mevcut Konumumu Kullan</button>
-    <div class="fl">Şehir veya Ülke Ara</div>
-    <div style="display:flex;gap:8px;margin-bottom:16px">
-      <input class="fi-in" id="cityInput" type="text" placeholder="İstanbul, Paris, Tokyo..." style="margin-bottom:0;flex:1">
-      <button class="s-save" style="width:auto;padding:11px 16px" onclick="searchCity()">Ara</button>
-    </div>
-    <div id="cityResults" style="display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto"></div>
-  </div>
-</div>
-<!-- SETTINGS -->
-<div class="sbg" id="sbg" onclick="cSetOut(event)">
-  <div class="ssh">
-    <div class="sh"></div>
-    <div class="s-title">⚙️ API Ayarları</div>
-    <div class="s-sub">Key'ler yalnızca bu cihazda saklanır.</div>
-    <div class="fl">Google Maps API Key</div>
-    <input class="fi-in" id="gmK" type="password" placeholder="AIzaSy...">
-    <div class="kst" id="gmS"></div>
-    <div class="fl">Anthropic (Claude) API Key</div>
-    <input class="fi-in" id="clK" type="password" placeholder="sk-ant-...">
-    <div class="kst" id="clS"></div>
-    <button class="s-save" onclick="saveKeys()">Kaydet ve Başlat ✦</button>
-    <div class="s-note">Key'ler tarayıcıda saklanır · Kimse göremez</div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+<button id="mfab" onclick="toggleSide()">☰</button>
+<div id="mbk" onclick="toggleSide()"></div>
+<div id="mw"></div>
 
 <script>
+// ── API KEYS (Firebase Remote Config'ten yüklenir) ──
+let CLAUDE_KEY   = '';
+let GOOGLE_KEY   = '';
+let GOOGLE_CX    = '';
+let UNSPLASH_KEY = 'C_yRkMGiiiPRusXG-gzBteoysa6WqUDjAjVEtDijJL8';
+let _userId      = null;
 
-// API Config — keys injected by GitHub Actions
-var _k = ['CL_PLACEHOLDER'];
-var CONFIG = {
-  get GM() { return 'GM_PLACEHOLDER'; },
-  get CL() { return _k[0] || localStorage.getItem('s_cl') || ''; }
-};
-function initRemoteConfig(){ return Promise.resolve(); }
+// ── STATE ──
+let grid=3, filters={style:null,gender:null,season:null};
+let gallery=[], albums=['Günlük','Spor','İş','Özel Gün'], curAlbum='', pinResults=[];
 
-var googleMap=null,placesService=null,userLocation=null,realPlaces=[],mapMarkers=[];
-
-window.onload=function(){
-  initRemoteConfig().then(function(){
-    setTimeout(function(){
-      document.getElementById('splash').classList.add('out');
-      setTimeout(function(){
-        var app=document.getElementById('app');
-        app.classList.add('on');
-        if(!CONFIG.GM){openSettings();return;}
-        loadMaps(CONFIG.GM);
-      },800);
-    },2400);
-  });
-};
-
-function loadMaps(key){
-  var s=document.createElement('script');
-  s.src='https://maps.googleapis.com/maps/api/js?key='+key+'&libraries=places&callback=mapsReady&language=tr';
-  s.async=true;
-  s.onerror=function(){showToast('⚠️ Maps yüklenemedi');openSettings();};
-  document.head.appendChild(s);
+// localStorage'dan galeriyi yükle
+function loadGalleryLocal(){
+  try{ gallery=JSON.parse(localStorage.getItem('kombin_gallery')||'[]'); }catch(e){ gallery=[]; }
+  renderGallery(); renderAlbumUI();
+}
+function saveGalleryLocal(){
+  try{ localStorage.setItem('kombin_gallery', JSON.stringify(gallery)); }catch(e){}
 }
 
-window.mapsReady=function(){
-  navigator.geolocation.getCurrentPosition(
-    function(p){
-      userLocation={lat:p.coords.latitude,lng:p.coords.longitude};
-      document.getElementById('locText').textContent='Konum bulundu...';
-      initMap();
-      reverseGeocode(userLocation);
-      search('');
-    },
-    function(){
-      userLocation={lat:41.0082,lng:28.9784};
-      currentCountry='TR';
-      document.getElementById('locText').textContent='İstanbul (varsayılan)';
-      initMap();
-      search('');
-    }
-  );
-};
-
-function initMap(){
-  var wrap=document.getElementById('mapWrap');
-  wrap.innerHTML='';
-  wrap.id='googleMap';
-  wrap.style.height='240px';
-  wrap.style.flexShrink='0';
-  wrap.style.borderBottom='1px solid rgba(255,255,255,.07)';
-  wrap.className='';
-
-  googleMap=new google.maps.Map(document.getElementById('googleMap'),{
-    center:userLocation,zoom:15,disableDefaultUI:true,zoomControl:true,
-    styles:[
-      {elementType:'geometry',stylers:[{color:'#1a1814'}]},
-      {elementType:'labels.text.fill',stylers:[{color:'#9a9080'}]},
-      {elementType:'labels.text.stroke',stylers:[{color:'#1a1814'}]},
-      {featureType:'road',elementType:'geometry',stylers:[{color:'#2d2820'}]},
-      {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#373025'}]},
-      {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#423828'}]},
-      {featureType:'water',elementType:'geometry',stylers:[{color:'#0d1b2a'}]},
-      {featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]}
-    ]
+// ── CHIP SEÇİMİ ──
+['cs','cg','cm'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{
+    const chip=e.target.closest('.chip'); if(!chip)return;
+    const was=chip.classList.contains('on');
+    document.getElementById(id).querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+    if(!was) chip.classList.add('on');
+    const key=id==='cs'?'style':id==='cg'?'gender':'season';
+    filters[key]=was?null:chip.dataset.v;
+    renderPills();
   });
-  new google.maps.Marker({position:userLocation,map:googleMap,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:'#C9A84C',fillOpacity:1,strokeColor:'#0F0E0C',strokeWeight:2},title:'Siz'});
-  placesService=new google.maps.places.PlacesService(googleMap);
-}
+});
 
-function search(kw){
-  if(!placesService)return;
-  mapMarkers.forEach(function(m){m.setMap(null)});mapMarkers=[];
-  document.getElementById('cardsGrid').innerHTML='<div class="loading"><div class="dot"><span></span><span></span><span></span></div><span>Restoranlar aranıyor...</span></div>';
-  document.getElementById('aiTxt').innerHTML='<div class="dot"><span></span><span></span><span></span></div>';
-  var searchType = 'restaurant';
-  if(kw==='cafe kahve coffee') searchType = 'cafe';
-  if(kw==='pastane tatlı baklava dondurma dessert') searchType = 'bakery';
-  var searchRadius = travelMode==='drive' ? 8000 : 1500;
-  if(kw.indexOf('fine dining')!==-1) searchRadius = travelMode==='drive'?15000:5000;
-  placesService.nearbySearch({location:userLocation,radius:searchRadius,type:searchType,language:'tr',keyword:kw},function(res,st){
-    if(st===google.maps.places.PlacesServiceStatus.OK&&res.length){
-      realPlaces=res.slice(0,8);renderCards(realPlaces);addMarkers(realPlaces);aiAnalyze(realPlaces,kw);
-    }else{document.getElementById('cardsGrid').innerHTML='<div class="loading">Sonuç bulunamadı.</div>';}
+function renderPills(){
+  const w=document.getElementById('pills'); w.innerHTML='';
+  Object.entries({style:filters.style,gender:filters.gender,season:filters.season}).forEach(([k,v])=>{
+    if(!v)return;
+    const d=document.createElement('div'); d.className='pill';
+    d.innerHTML=`${v} <button onclick="clearFilter('${k}')">✕</button>`;
+    w.appendChild(d);
   });
 }
-
-function addMarkers(places){
-  places.forEach(function(p,i){
-    var m=new google.maps.Marker({position:p.geometry.location,map:googleMap,title:p.name,
-      icon:{path:'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z',
-        fillColor:i===0?'#C9A84C':'#C4622D',fillOpacity:1,strokeColor:'#0F0E0C',strokeWeight:1.5,scale:1.6,
-        anchor:new google.maps.Point(12,22)}});
-    m.addListener('click',function(){openCard(i);});
-    mapMarkers.push(m);
-  });
+function clearFilter(key){
+  filters[key]=null;
+  const id=key==='style'?'cs':key==='gender'?'cg':'cm';
+  document.getElementById(id).querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  renderPills();
 }
 
-function renderCards(places){
-  var emojis=['🍽','🥘','🍜','🥗','🍖','🫕','🍝','🥙'];
-  document.getElementById('cardsGrid').innerHTML=places.map(function(p,i){
-    var rating=p.rating||'—';
-    var cnt=p.user_ratings_total||0;
-    var openHtml=p.opening_hours?(p.opening_hours.open_now?'<span class="c-open">● Açık</span>':'<span class="c-closed">● Kapalı</span>'):'';
-    var price=p.price_level?'₺'.repeat(p.price_level):'';
-    var photo=p.photos&&p.photos[0]?p.photos[0].getUrl({maxWidth:400,maxHeight:200}):null;
-    var types=(p.types||[]).filter(function(t){return!['restaurant','food','point_of_interest','establishment'].includes(t);}).slice(0,2).map(function(t){return t.replace(/_/g,' ');}).join(' · ');
-    var imgHtml=photo?'<img src="'+photo+'" alt="'+p.name+'" loading="lazy" onerror="this.style.display=\'none\'">':'<div class="c-emoji">'+emojis[i%8]+'</div>';
-
-    return '<div class="card'+(i===0?' top':'')+'" onclick="openCard('+i+')">'+
-      '<div class="c-img">'+imgHtml+
-      '<div class="c-badge'+(i===0?'':' g')+'">'+(i===0?'✦ Önerilen':'Yakın')+'</div>'+
-      '<div class="c-fav" onclick="event.stopPropagation();fav(this)"><svg fill="none" stroke="rgba(237,232,223,0.6)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>'+
-      '</div>'+
-      '<div class="c-body">'+
-      '<div class="c-name">'+p.name+'</div>'+
-      '<div class="c-type">'+(types||'Restoran')+'</div>'+
-      '<div class="c-row"><div class="c-rate"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'+rating+' <span class="c-cnt">('+cnt.toLocaleString()+')</span></div>'+openHtml+'</div>'+
-      '<div class="c-ai"><div class="c-ail">✦ AI</div><span id="n'+i+'">Analiz ediliyor...</span></div>'+
-      '</div>'+
-      '<div class="c-foot"><span class="c-price">'+price+(p.vicinity?' · '+p.vicinity.split(',')[0]:'')+'</span>'+
-      '<button class="c-dir" onclick="event.stopPropagation();goMaps('+i+')">Yol Tarifi</button></div>'+
-      '</div>';
-  }).join('');
+function setGrid(n){
+  grid=n;
+  document.getElementById('gp').querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i+1===n));
+  document.getElementById('pgrid').className=`pgrid c${n}`;
+}
+function switchTab(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+name).classList.add('on');
+  btn.classList.add('on');
+}
+function toggleSide(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('mbk').classList.toggle('open');
+}
+function setLoading(on){
+  document.getElementById('sgo').classList.toggle('ld',on);
+  document.getElementById('slbl').textContent=on?'Aranıyor…':'🔍 AI ile Ara';
 }
 
-async function aiAnalyze(places,kw){
-  var list=places.slice(0,6).map(function(p,i){
-    return (i+1)+'. '+p.name+
-      ' | Google Puan:'+(p.rating||'?')+'/5'+
-      ' | Yorum:'+(p.user_ratings_total||0)+
-      ' | '+(p.opening_hours&&p.opening_hours.open_now?'Acik':'Kapali')+
-      ' | Fiyat:'+(p.price_level?'TL'.repeat(p.price_level):'Bilinmiyor')+
-      ' | '+(p.vicinity||'');
-  }).join('\n');
+// ── ARAMA ──
+async function doSearch(){
+  const q=document.getElementById('q').value.trim();
+  if(!q){toast('Lütfen bir arama yazın');return;}
+  setLoading(true);
+  try{
+    const r=await refineQuery(q);
+    await fetchImages(r);
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+    document.getElementById('tab-discover').classList.add('on');
+    document.querySelectorAll('.ntab').forEach((b,i)=>b.classList.toggle('on',i===0));
+    if(window.innerWidth<740)toggleSide();
+  }catch(e){toast('Hata: '+e.message);}
+  finally{setLoading(false);}
+}
 
-  var reviewSites = {
-    'TR':'Zomato Turkiye, TripAdvisor Turkiye ve Google Maps',
-    'JP':'Tabelog, Gurunavi ve TripAdvisor Japan',
-    'FR':'Le Fooding, LaFourchette ve TripAdvisor France',
-    'IT':'TheFork, TripAdvisor Italia ve Gambero Rosso',
-    'US':'Yelp, Eater ve OpenTable',
-    'DE':'OpenTable, TripAdvisor Deutschland ve Yelp Germany',
-    'ES':'ElTenedor, TripAdvisor Espana ve Verema',
-    'GR':'TripAdvisor Greece, e-table ve Deliveras',
-    'CN':'Dianping, Meituan ve TripAdvisor China',
-    'KR':'Naver Map, Kakao Map ve TripAdvisor Korea',
-    'NL':'Iens, TripAdvisor Nederland ve OpenTable',
-    'SE':'The Fork Sweden, TripAdvisor Sverige ve Restaurangguiden',
-    'NO':'Aperitif, TripAdvisor Norge ve Matoppskrift',
-    'DK':'The Fork Denmark, TripAdvisor Danmark ve Spisested',
-    'RU':'Afisha.Eda, TripAdvisor Russia ve Yandex Eda',
-    'EG':'Zomato Egypt, TripAdvisor Egypt ve Otlob',
-    'ZA':'Eat Out South Africa, TripAdvisor South Africa ve Zomato SA',
-    'AT':'Falstaff, TripAdvisor Oesterreich ve Gastroguide',
-    'CH':'GaultMillau, TripAdvisor Schweiz ve Restaurants.ch',
-    'AU':'Zomato Australia, TripAdvisor Australia ve Broadsheet',
-    'PT':'Zomato Portugal, TripAdvisor Portugal ve Fugas',
-    'BR':'TripAdvisor Brasil, Zomato Brasil ve iFood',
-    'AR':'TripAdvisor Argentina, Zomato Argentina ve PedidosYa',
-    'SA':'Zomato Saudi, TripAdvisor Saudi Arabia ve Jahez',
-    'IL':'TripAdvisor Israel, Rest ve Zomato Israel',
-    'SG':'Burpple, TripAdvisor Singapore ve HungryGoWhere',
-    'MY':'Zomato Malaysia, TripAdvisor Malaysia ve FoodAdvisor',
-    'ID':'Zomato Indonesia, TripAdvisor Indonesia ve GoFood',
-    'PH':'Zomato Philippines, TripAdvisor Philippines ve Booky',
-    'AE':'Zomato UAE, TripAdvisor UAE ve Talabat',
-  };
-  var sites = reviewSites[currentCountry] || ('TripAdvisor, Yelp ve Google Maps - '+currentCountry+' bolumu');
-  var sysPrompt='Sen Sofra AI adli uzman bir dunya mutfaklari kritigi ve yemek yazarisin.'
-    +' '+sites+' yorumlarindan edindign bilgileri sentezleyerek derin analiz yapiyorsun.'
-    +' Kullanici "'+( kw||'genel restoran')+'" aradı.'
-    +'\n\nGoogle Maps gercek verileri:\n'+list
-    +'\n\nGorevler:'
-    +'\n1. GENEL ANALIZ (genel alani): 3 paragraf yaz.'
-    +'\nParagraf 1: Zomato/TripAdvisor/Google yorumlarindan derlenen lezzet profili ve yemek kalitesi degerlendirmesi.'
-    +'\nParagraf 2: Menu fiyatlamasi, porsiyonlar ve fiyat-performans dengesi analizi.'
-    +'\nParagraf 3: Musteri memnuniyeti, atmosfer ve genel oneri.'
-    +'\nHer paragraf en az 2 cumle. Akici ve uzman Turkcesi kullan.'
-    +'\n2. KART NOTLARI (notlar alani): Her restoran icin 20-25 kelime. Lezzet+fiyat+musteri yorumu icersin.'
-    +'\n\nSADECE asagidaki formatta gecerli JSON dondur, baska hicbir sey yazma:'
-    +'\n{"genel":"P1 metni\\n\\nP2 metni\\n\\nP3 metni","notlar":["not0","not1","not2","not3","not4","not5"]}';
+async function applyFilters(){
+  if(!filters.style&&!filters.gender&&!filters.season){toast('En az bir filtre seçin');return;}
+  const q=[filters.gender,filters.season,filters.style,'kombin'].filter(Boolean).join(' ');
+  setLoading(true);
+  try{
+    const r=await refineQuery(q);
+    await fetchImages(r);
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+    document.getElementById('tab-discover').classList.add('on');
+    document.querySelectorAll('.ntab').forEach((b,i)=>b.classList.toggle('on',i===0));
+    if(window.innerWidth<740)toggleSide();
+  }catch(e){toast('Hata: '+e.message);}
+  finally{setLoading(false);}
+}
+
+async function refineQuery(q){
+  const lower = q.toLowerCase();
+  // Türkçe → İngilizce detaylı çeviri
+  const map=[
+    ['erkek çocuk','boys kids'],['kız çocuk','girls kids'],
+    ['kadın','women'],['erkek','men'],
+    ['kış','winter'],['yaz','summer'],['ilkbahar','spring'],['sonbahar','fall autumn'],
+    ['spor','athletic sporty streetwear'],['smart casual','smart casual'],
+    ['casual','casual everyday'],['klasik','classic formal elegant'],
+    ['boho','bohemian boho'],['kombin','outfit look style'],
+    ['takım','suit outfit'],['elbise','dress'],['pantolon','pants trousers'],
+    ['etek','skirt'],['ceket','jacket blazer'],['kazak','sweater knit'],
+    ['mont','coat winter jacket'],['sneaker','sneakers'],['topuklu','heels']
+  ];
+  let r = lower;
+  map.forEach(([tr,en])=>{ r = r.replace(new RegExp(tr,'g'), en); });
+  // Temizle ve fashion ekle
+  r = r.replace(/\s+/g,' ').trim();
+  if(!r.includes('outfit')&&!r.includes('look')&&!r.includes('style')) r += ' outfit';
+  if(!r.includes('fashion')&&!r.includes('style')) r += ' fashion';
+
+  if(!CLAUDE_KEY) return r;
 
   try{
-    var res=await fetch('https://sofra-ai-proxy.semihcanyanar.workers.dev',{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1500,
-        messages:[{role:'user',content:sysPrompt}]
-      })
+      headers:{'x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01','content-type':'application/json'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:50,
+        system:'Convert this to a precise English Unsplash photo search query for fashion/outfit photos. Be very specific about clothing style. Return ONLY 4-7 words.',
+        messages:[{role:'user',content:q}]})
     });
-    var d=await res.json();
-    if(!d.content||!d.content[0]){throw new Error('empty');}
-    var raw=d.content[0].text.replace(/```json|```/g,'').trim();
-    var j=JSON.parse(raw);
-    if(j.genel){
-      document.getElementById('aiTxt').innerHTML=j.genel.replace(/\n\n/g,'<br><br>');
-      document.getElementById('aiSub').textContent='Claude Sonnet · Zomato & TripAdvisor & Google · '+places.length+' mekan';
-    }
-    if(j.notlar&&Array.isArray(j.notlar)){
-      j.notlar.forEach(function(n,i){var el=document.getElementById('n'+i);if(el&&n)el.textContent=n;});
-    }
-  }catch(e){
-    console.error('AI:',e);
-    document.getElementById('aiTxt').innerHTML='<span style="color:rgba(237,232,223,.5);font-size:11px">Detaylı analiz yüklenemedi.</span>';
-    places.forEach(function(p,i){
-      var el=document.getElementById('n'+i);
-      if(el){el.textContent=(p.rating?'⭐'+p.rating+'/5':'')+' · '+(p.user_ratings_total||0)+' yorum'+(p.price_level?' · '+'₺'.repeat(p.price_level):'');}
-    });
+    const d=await resp.json();
+    return d.content?.[0]?.text?.trim()||r;
+  }catch(e){return r;}
+}
+
+async function fetchImages(query){
+  const[gI,uI]=await Promise.all([fetchGoogle(query),fetchUnsplash(query)]);
+  const merged=[];let gi=0,ui=0;
+  while(merged.length<28){
+    if(gi<gI.length&&merged.length%3<2)merged.push(gI[gi++]);
+    else if(ui<uI.length)merged.push(uI[ui++]);
+    else if(gi<gI.length)merged.push(gI[gi++]);
+    else break;
   }
+  const scored=merged.map(img=>({img,s:galScore(img)}));
+  scored.sort((a,b)=>b.s-a.s);
+  pinResults=scored.map(x=>x.img);
+  renderPins();
 }
 
-function openCard(i){
-  var p=realPlaces[i];if(!p)return;
-  var photo=p.photos&&p.photos[0]?p.photos[0].getUrl({maxWidth:800,maxHeight:400}):null;
-  var open=p.opening_hours?(p.opening_hours.open_now?'🟢 Açık':'🔴 Kapalı'):'';
-  var note=document.getElementById('n'+i)?document.getElementById('n'+i).textContent:'';
-  var loc=p.geometry.location;
-  var url='https://maps.google.com/?q='+loc.lat()+','+loc.lng();
-  document.getElementById('mbody').innerHTML=
-    (photo?'<img class="m-img" src="'+photo+'" alt="'+p.name+'">':'')+
-    '<div class="m-title">'+p.name+'</div>'+
-    '<div class="m-addr">'+(p.vicinity||'')+'</div>'+
-    '<div class="m-stats"><span class="m-stat">⭐ '+(p.rating||'—')+' ('+(p.user_ratings_total||0).toLocaleString()+')</span><span class="m-stat">'+open+'</span>'+(p.price_level?'<span class="m-stat">'+'₺'.repeat(p.price_level)+'</span>':'')+'</div>'+
-    '<div class="m-ai"><h4>✦ Claude AI Analizi</h4><p>'+note+'</p></div>'+
-    '<div class="m-btns"><button class="m-btn s" onclick="cModal()">Kapat</button><button class="m-btn p" onclick="window.open(\''+url+'\',\'_blank\')">🗺 Yol Tarifi</button></div>';
-  document.getElementById('mbg').classList.add('open');
-}
-function cModal(e){if(!e||e.target===document.getElementById('mbg'))document.getElementById('mbg').classList.remove('open');}
-function goMaps(i){var p=realPlaces[i];if(!p)return;var l=p.geometry.location;window.open('https://maps.google.com/?q='+l.lat()+','+l.lng(),'_blank');}
-function doSearch(){var q=document.getElementById('searchInput').value.trim();if(placesService)search(q);else showToast('⏳ Harita yükleniyor...');}
-function setFilter(el,kw){document.querySelectorAll('.fl-btn').forEach(function(b){b.classList.remove('on');});el.classList.add('on');if(placesService)search(kw);}
-function fav(btn){var s=btn.querySelector('svg');var on=s.getAttribute('fill')==='#C9A84C';s.setAttribute('fill',on?'none':'#C9A84C');s.setAttribute('stroke',on?'rgba(237,232,223,0.6)':'#C9A84C');showToast(on?'💔 Favorilerden çıkarıldı':'✦ Favorilere eklendi');}
-function openSettings(){document.getElementById('gmK').value=CONFIG.GM;document.getElementById('clK').value=CONFIG.CL;kSt('gm',CONFIG.GM);kSt('cl',CONFIG.CL);document.getElementById('sbg').classList.add('open');}
-function cSetOut(e){if(e.target===document.getElementById('sbg'))document.getElementById('sbg').classList.remove('open');}
-function kSt(id,v){var el=document.getElementById(id+'S');el.className='kst '+(v&&v.length>10?'ok':'no');el.textContent=v&&v.length>10?'✓ Kayıtlı ('+v.substring(0,8)+'...)':'✗ Girilmedi';}
-function saveKeys(){
-  var gm=document.getElementById('gmK').value.trim();
-  var cl=document.getElementById('clK').value.trim();
-  if(!gm){showToast('⚠️ Google Maps key gerekli!');return;}
-  localStorage.setItem('s_gm',gm);
-  if(cl){localStorage.setItem('s_cl',cl);}
-  document.getElementById('sbg').classList.remove('open');
-  showToast('✦ Kaydedildi, yeniden başlatılıyor...');
-  setTimeout(function(){location.reload();},1200);
+async function fetchGoogle(query){
+  if(!GOOGLE_KEY||!GOOGLE_CX)return[];
+  try{
+    const url=`https://www.googleapis.com/customsearch/v1?key=${GOOGLE_KEY}&cx=${GOOGLE_CX}&q=${encodeURIComponent(query+' outfit')}&searchType=image&num=10&imgSize=large&safe=active`;
+    const d=await(await fetch(url)).json();
+    return(d.items||[]).map(item=>({url:item.link,thumb:item.image?.thumbnailLink||item.link,title:item.title||query,tags:[]}));
+  }catch(e){return[];}
 }
 
-// Travel mode
-var travelMode = 'walk'; // walk=1500m, drive=5000m
-function setTravelMode(mode){
-  travelMode = mode;
-  document.querySelectorAll('.tm-btn').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('tm-'+mode).classList.add('active');
-  if(placesService) search(document.querySelector('.fl-btn.on')?.dataset?.kw || '');
+async function fetchUnsplash(query){
+  if(UNSPLASH_KEY){
+    try{
+      // Birden fazla varyant sorgula, daha fazla sonuç
+      const variants=[
+        query,
+        query.replace('outfit','look'),
+        query.replace('fashion','style streetwear'),
+      ];
+      const allResults=[];
+      for(const v of variants){
+        const d=await(await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(v)}&per_page=10&orientation=portrait&client_id=${UNSPLASH_KEY}&order_by=relevant`)).json();
+        if(d.results?.length){
+          d.results.forEach(p=>{
+            if(!allResults.find(x=>x.url===p.urls.regular)){
+              allResults.push({url:p.urls.regular,thumb:p.urls.small,title:'',tags:(p.tags||[]).map(t=>t.title)});
+            }
+          });
+        }
+      }
+      if(allResults.length) return allResults;
+    }catch(e){}
+  }
+  // Picsum + fashion keywords as reliable fallback
+  const fashionIds=[1036,1035,1040,1041,1043,1044,1052,1055,1062,1066,
+                    1078,1083,1084,1085,1086,1088,1089,1090,1091,1092,
+                    334,335,336,337,338,339,340,341];
+  const t=Date.now();
+  return fashionIds.slice(0,14).map((id,i)=>({
+    url:`https://picsum.photos/seed/${id+t}/600/800`,
+    thumb:`https://picsum.photos/seed/${id+t}/400/550`,
+    title:query+' style '+(i+1),
+    tags:query.split(' ')
+  }));
 }
 
-// City search
-var currentCountry = 'TR';
-function openCitySearch(){
-  document.getElementById('cbg').classList.add('open');
-  document.getElementById('cityResults').innerHTML='';
+function galScore(img){
+  if(!gallery.length)return 0;
+  const kw=[...new Set(gallery.flatMap(g=>(g.album||'').toLowerCase().split(/\s+/)))];
+  const txt=(img.title+' '+(img.tags||[]).join(' ')).toLowerCase();
+  return kw.filter(k=>k.length>2&&txt.includes(k)).length;
 }
-function cCityOut(e){if(e.target===document.getElementById('cbg'))document.getElementById('cbg').classList.remove('open');}
-function useMyLocation(){
-  document.getElementById('cbg').classList.remove('open');
-  navigator.geolocation.getCurrentPosition(function(p){
-    userLocation={lat:p.coords.latitude,lng:p.coords.longitude};
-    reverseGeocode(userLocation);
-    if(googleMap) googleMap.setCenter(userLocation);
-    if(placesService) search('');
+
+function renderPins(){
+  const pg=document.getElementById('pgrid');
+  document.getElementById('empty').style.display=pinResults.length?'none':'flex';
+  pg.innerHTML='';
+  const heights=['h-s','h-m','h-m','h-l','h-m','h-xl','h-s','h-l','h-m','h-s','h-xl','h-m','h-l','h-s'];
+  pinResults.forEach((img,i)=>{
+    const star=galScore(img)>0&&gallery.length>0;
+    const h=heights[i%heights.length];
+    const c=document.createElement('div'); c.className='pcard '+h;
+    c.innerHTML=`
+      <img src="${img.thumb||img.url}" alt="${img.title}" loading="lazy"
+        onerror="this.style.height='180px';this.style.background='#2a2a2a'"/>
+      <div class="pov"></div>
+      ${star?'<div class="pstar" title="Gardrobunuzla uyumlu!">⭐</div>':''}`;
+    c.onclick=()=>showModal(`
+      <img src="${img.url}" style="margin-bottom:10px" onerror="this.style.display='none'"/>
+      <div class="mdb" style="margin-top:10px"><button class="cc" onclick="closeModal()">Kapat</button></div>`);
+    pg.appendChild(c);
+  });
+  pg.className=`pgrid c${grid}`;
+}
+
+// ── GALERİ ──
+function renderGallery(){
+  const gg=document.getElementById('gg'); gg.innerHTML='';
+  const list=curAlbum?gallery.filter(g=>g.album===curAlbum):gallery;
+  list.forEach(item=>{
+    const d=document.createElement('div'); d.className='gi';
+    d.innerHTML=`
+      <img src="${item.url}" alt="${item.album}" loading="lazy" onerror="this.style.display='none'"/>
+      <div class="gi-alb">${item.album}</div>
+      <button class="gd" onclick="delItem('${item.id}',event)">✕</button>`;
+    d.onclick=e=>{if(!e.target.classList.contains('gd'))showModal(`
+      <img src="${item.url}" onerror="this.style.display='none'"/>
+      <div class="mdb" style="margin-top:10px"><button class="cc" onclick="closeModal()">Kapat</button></div>`);};
+    gg.appendChild(d);
+  });
+  document.getElementById('ulim').textContent=`${gallery.length} / 50 fotoğraf`;
+}
+
+function renderAlbumUI(){
+  const sel=document.getElementById('alb-sel'), tabs=document.getElementById('atabs');
+  sel.innerHTML='<option value="">Tüm Kıyafetler</option>';
+  tabs.innerHTML=`<div class="ach on" onclick="filterAlbum(this,'')">Tümü (${gallery.length})</div>`;
+  albums.forEach(a=>{
+    const o=document.createElement('option'); o.value=a; o.textContent=a; sel.appendChild(o);
+    const cnt=gallery.filter(g=>g.album===a).length;
+    const ch=document.createElement('div'); ch.className='ach';
+    ch.textContent=`${a} (${cnt})`; ch.onclick=()=>filterAlbum(ch,a); tabs.appendChild(ch);
   });
 }
-function reverseGeocode(loc){
-  var gc=new google.maps.Geocoder();
-  gc.geocode({location:loc,language:'tr'},function(res,st){
-    if(st==='OK'&&res[0]){
-      var addr=res[0].address_components;
-      var city=addr.find(function(a){return a.types.includes('locality');});
-      var country=addr.find(function(a){return a.types.includes('country');});
-      currentCountry = country?country.short_name:'TR';
-      document.getElementById('locText').textContent=(city?city.long_name:'')+(country?' · '+country.long_name:'');
-    }
-  });
-}
-function searchCity(){
-  var q=document.getElementById('cityInput').value.trim();
-  if(!q)return;
-  var gc=new google.maps.Geocoder();
-  gc.geocode({address:q,language:'tr'},function(res,st){
-    if(st==='OK'&&res.length){
-      var html=res.slice(0,5).map(function(r,i){
-        return '<div class="city-result" onclick="selectCity('+i+')">'+r.formatted_address+'</div>';
-      }).join('');
-      document.getElementById('cityResults').innerHTML=html;
-      window._cityResults=res;
-    } else {
-      document.getElementById('cityResults').innerHTML='<div style="color:rgba(237,232,223,.4);font-size:13px">Sonuç bulunamadı</div>';
-    }
-  });
-}
-function selectCity(i){
-  var r=window._cityResults[i];
-  userLocation={lat:r.geometry.location.lat(),lng:r.geometry.location.lng()};
-  var addr=r.address_components;
-  var country=addr.find(function(a){return a.types.includes('country');});
-  currentCountry=country?country.short_name:'TR';
-  document.getElementById('locText').textContent=r.formatted_address;
-  document.getElementById('cbg').classList.remove('open');
-  if(googleMap) googleMap.setCenter(userLocation);
-  if(placesService){placesService=new google.maps.places.PlacesService(googleMap);search('');}
+
+function filterAlbum(el,album){
+  curAlbum=album;
+  document.querySelectorAll('.ach').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on'); renderGallery();
 }
 
-// Local food
-var localFoodMap = {
-  'TR':'döner kebap pide lahmacun meze balık',
-  'JP':'sushi ramen soba tempura yakitori',
-  'IT':'pizza pasta risotto tiramisu',
-  'FR':'brasserie bistro croissant fromage',
-  'MX':'taco burrito enchilada guacamole',
-  'IN':'curry biryani tandoor masala',
-  'CN':'dim sum peking duck hotpot dumpling',
-  'TH':'pad thai tom yum green curry',
-  'GR':'souvlaki gyros moussaka mezze',
-  'ES':'tapas paella churros pintxos',
-  'US':'bbq burger steakhouse brunch',
-  'DE':'schnitzel bratwurst pretzels beer',
-  'KR':'bibimbap bulgogi kimchi korean bbq',
-  'VN':'pho banh mi spring rolls',
-  'MA':'tagine couscous mint tea',
-  'LB':'hummus falafel shawarma mezze',
-  'NL':'stamppot herring stroopwafel bitterballen erwtensoep',
-  'SE':'smorgasbord meatballs gravlax husmanskost kanelbulle',
-  'NO':'rakfisk lefse brunost fiskekaker kjottkaker',
-  'DK':'smorrebrod frikadeller aebleskiver danish pastry',
-  'RU':'borscht pelmeni blini beef stroganoff solyanka',
-  'EG':'koshari ful medames molokhia kofta feteer',
-  'ZA':'braai boerewors biltong potjiekos bunny chow',
-  'AT':'wiener schnitzel apfelstrudel kaiserschmarrn tafelspitz',
-  'CH':'fondue raclette rosti birchermuesli zopf',
-  'AU':'meat pie barramundi pavlova lamington vegemite',
-  'PT':'bacalhau pasteis de nata piri piri caldo verde',
-  'BR':'churrasco feijoada coxinha brigadeiro pao de queijo',
-  'AR':'asado empanada chimichurri dulce de leche medialunas',
-  'SA':'kabsa mandi jareesh mutabbaq saleeg',
-  'IL':'hummus shakshuka falafel sabich knafeh',
-  'SG':'hainanese chicken rice laksa chili crab char kway teow',
-  'MY':'nasi lemak char kway teow satay roti canai',
-  'ID':'nasi goreng rendang gado gado sate soto',
-  'PH':'adobo sinigang lechon kare kare halo halo',
-  'AE':'shawarma hummus machboos luqaimat al harees',
-};
-function setLocalFood(){
-  document.querySelectorAll('.fl-btn').forEach(function(b){b.classList.remove('on');});
-  event.target.closest('.fl-btn').classList.add('on');
-  var kw=localFoodMap[currentCountry]||'yerel geleneksel yemek';
-  if(placesService) search(kw);
-  showToast('🏳️ '+currentCountry+' için lokal yemekler aranıyor...');
+function openUpload(){
+  if(gallery.length>=50){toast('50 fotoğraf sınırına ulaştınız');return;}
+  showModal(`<h3>📷 Fotoğraf Ekle</h3>
+    <select id="up-alb">${albums.map(a=>`<option value="${a}">${a}</option>`).join('')}</select>
+    <div class="uz" onclick="document.getElementById('fi').click()">
+      <div class="ui">📁</div><p>Tıklayarak seç</p>
+      <p style="font-size:.7rem;margin-top:3px;color:#555">Otomatik sıkıştırılır</p>
+    </div>
+    <input type="file" id="fi" accept="image/*" multiple style="display:none" onchange="handleUpload(event)"/>
+    <div class="mdb"><button class="cc" onclick="closeModal()">İptal</button></div>`);
 }
 
-var tt;function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show');},2500);}
-document.getElementById('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
+async function handleUpload(e){
+  const files=Array.from(e.target.files);
+  const album=document.getElementById('up-alb')?.value||albums[0];
+  closeModal(); let added=0;
+  for(const file of files){
+    if(gallery.length>=50)break;
+    try{
+      const url=await toBase64(file);
+      // Firebase varsa oraya kaydet
+      if(window._fb && _userId){
+        try{
+          const{storage,ref,uploadBytes,getDownloadURL,db,collection,addDoc}=window._fb;
+          const blob = await compressImg(file,800,.72);
+          const sRef = ref(storage,`users/${_userId}/gallery/${Date.now()}_${file.name}`);
+          await uploadBytes(sRef,blob);
+          const fbUrl = await getDownloadURL(sRef);
+          const docRef = await addDoc(collection(db,'users',_userId,'gallery'),{url:fbUrl,album,name:file.name,createdAt:Date.now()});
+          gallery.push({id:docRef.id,url:fbUrl,album,name:file.name});
+          added++; continue;
+        }catch(e){ console.warn('Firebase upload failed, using local',e); }
+      }
+      gallery.push({id:'u'+Date.now()+added, url, album, name:file.name});
+      added++;
+    }catch(err){toast('Hata: '+err.message);}
+  }
+  saveGalleryLocal();
+  renderGallery(); renderAlbumUI();
+  if(added)toast(`${added} fotoğraf eklendi ✓`);
+}
+
+async function compressImg(file,maxW,q){
+  return new Promise(res=>{
+    const img=new Image(),url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const s=Math.min(1,maxW/img.width);
+      const c=document.createElement('canvas');
+      c.width=img.width*s;c.height=img.height*s;
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      c.toBlob(b=>res(b),'image/jpeg',q);URL.revokeObjectURL(url);
+    };img.src=url;
+  });
+}
+function toBase64(file){
+  return new Promise((res,rej)=>{
+    const reader=new FileReader();
+    reader.onload=e=>res(e.target.result);
+    reader.onerror=()=>rej(new Error('Dosya okunamadı'));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function delItem(id,e){
+  e.stopPropagation();
+  if(!confirm('Bu fotoğrafı sil?'))return;
+  if(window._fb && _userId){
+    try{
+      const{db,deleteDoc,doc}=window._fb;
+      await deleteDoc(doc(db,'users',_userId,'gallery',id));
+    }catch(e){}
+  }
+  gallery=gallery.filter(g=>g.id!==id);
+  saveGalleryLocal();
+  renderGallery(); renderAlbumUI(); toast('Silindi');
+}
+
+function openAlbumModal(){
+  showModal(`<h3>🗂 Yeni Albüm</h3>
+    <input id="an" placeholder="Albüm adı…"/>
+    <div class="mdb">
+      <button class="ok" onclick="addAlbum()">Oluştur</button>
+      <button class="cc" onclick="closeModal()">İptal</button>
+    </div>`);
+  setTimeout(()=>document.getElementById('an')?.focus(),50);
+}
+function addAlbum(){
+  const name=document.getElementById('an')?.value.trim(); if(!name)return;
+  if(!albums.includes(name))albums.push(name);
+  renderAlbumUI(); toast('Albüm oluşturuldu'); closeModal();
+}
+
+function showModal(html){
+  document.getElementById('mw').innerHTML=`<div class="ov" onclick="if(event.target.classList.contains('ov'))closeModal()"><div class="md">${html}</div></div>`;
+}
+function closeModal(){document.getElementById('mw').innerHTML='';}
+function toast(msg){
+  const el=document.createElement('div'); el.className='toast'; el.textContent=msg;
+  document.body.appendChild(el); setTimeout(()=>el.remove(),2800);
+}
+
+document.getElementById('q').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSearch();}
+});
+
+// BOOT - Firebase init + Loading screen
+async function initFirebase(){
+  if(!window._fb) return;
+  const{auth,signInAnonymously,onAuthStateChanged,remoteConfig,fetchAndActivate,getValue,db,collection,getDocs}=window._fb;
+  try{ await signInAnonymously(auth); }catch(e){}
+  onAuthStateChanged(auth, async user=>{
+    if(!user) return;
+    _userId = user.uid;
+    // Remote Config'ten key'leri al
+    try{
+      await Promise.race([
+        fetchAndActivate(remoteConfig),
+        new Promise((_,r)=>setTimeout(()=>r('timeout'),4000))
+      ]);
+      const ck = getValue(remoteConfig,'claude_api_key').asString();
+      const gk = getValue(remoteConfig,'google_api_key').asString();
+      const gc = getValue(remoteConfig,'google_cx').asString();
+      if(ck) CLAUDE_KEY = ck;
+      if(gk) GOOGLE_KEY = gk;
+      if(gc) GOOGLE_CX  = gc;
+    }catch(e){ console.warn('Remote config timeout, using defaults'); }
+    // Firestore'dan galeriyi yükle
+    try{
+      const snap = await getDocs(collection(db,'users',_userId,'gallery'));
+      gallery=[];
+      snap.forEach(d=>gallery.push({id:d.id,...d.data()}));
+      renderGallery(); renderAlbumUI();
+    }catch(e){ loadGalleryLocal(); }
+  });
+}
+initFirebase();
+
+// BOOT - Loading screen animation
+(function(){
+  const shapes=['⭐','🌸','💫','✨','🌟','💕','🎀','👗','💎','🌺','⚡','🦋'];
+  const wrap=document.getElementById('ls-shapes');
+  if(!wrap)return;
+  for(let i=0;i<18;i++){
+    const el=document.createElement('div');
+    el.className='ls-shape';
+    el.textContent=shapes[Math.floor(Math.random()*shapes.length)];
+    el.style.left=Math.random()*100+'vw';
+    el.style.top=(60+Math.random()*40)+'vh';
+    el.style.animationDelay=(Math.random()*2)+'s';
+    el.style.animationDuration=(1.5+Math.random()*2)+'s';
+    el.style.fontSize=(1+Math.random()*1.5)+'rem';
+    wrap.appendChild(el);
+  }
+  setTimeout(()=>{
+    const ls=document.getElementById('ls');
+    if(ls){ls.classList.add('hide');setTimeout(()=>{ls.style.display='none';document.getElementById('app').style.display='flex';},500);}
+  },2200);
+})();
+loadGalleryLocal();
 </script>
 
 </body>
