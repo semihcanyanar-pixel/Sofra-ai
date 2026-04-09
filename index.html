@@ -47,7 +47,14 @@ flex-shrink:0;
 .sb-logo h1 i{color:#C9A84C;font-style:italic}
 .sb-logo p{font-size:10px;color:rgba(237,232,223,.4);margin-top:3px;letter-spacing:.5px}
 
-.sb-loc{padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.07);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:7px;font-size:12px;color:rgba(237,232,223,.45);cursor:pointer}
+.sb-loc-wrap{border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-loc{padding:10px 20px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:7px;font-size:12px;color:rgba(237,232,223,.45);cursor:pointer}
+.sb-loc svg{color:#C9A84C;flex-shrink:0}
+.travel-modes{display:-webkit-flex;display:flex;gap:8px;padding:8px 16px 12px}
+.tm-btn{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;gap:5px;padding:7px;border-radius:9px;border:1px solid rgba(255,255,255,.07);background:transparent;color:rgba(237,232,223,.4);font-size:11px;font-weight:500;cursor:pointer;font-family:‘Inter’,sans-serif;transition:all .15s}
+.tm-btn.active{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.4);color:#C9A84C}
+.tm-btn:active{transform:scale(.97)}
+
 .sb-loc svg{color:#C9A84C;flex-shrink:0;-webkit-flex-shrink:0}
 
 .sb-search{padding:14px;border-bottom:1px solid rgba(255,255,255,.07)}
@@ -156,6 +163,7 @@ flex-shrink:0;
 .m-btn.s{background:#232018;color:#EDE8DF;border:1px solid rgba(255,255,255,.07)}
 
 /* SETTINGS */
+.cbg{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;-webkit-align-items:flex-end;align-items:flex-end}.cbg.open{display:-webkit-flex;display:flex;animation:fi .3s ease}.csh{background:#1A1814;border-radius:20px 20px 0 0;width:100%;padding:0 22px calc(32px + env(safe-area-inset-bottom));animation:su .4s cubic-bezier(.34,1.56,.64,1)}.city-result{background:#232018;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:11px 14px;cursor:pointer;font-size:13px;color:#EDE8DF;transition:background .15s}.city-result:active{background:#2D2820}
 .sbg{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;-webkit-align-items:flex-end;align-items:flex-end}
 .sbg.open{display:-webkit-flex;display:flex;animation:fi .3s ease}
 .ssh{background:#1A1814;border-radius:20px 20px 0 0;width:100%;padding:0 22px calc(32px + env(safe-area-inset-bottom));animation:su .4s cubic-bezier(.34,1.56,.64,1)}
@@ -194,9 +202,22 @@ flex-shrink:0;
     </div>
 
 ```
-<div class="sb-loc" onclick="openSettings()">
-  <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-  <span id="locText">Konum alınıyor...</span>
+<div class="sb-loc-wrap">
+  <div class="sb-loc" onclick="openCitySearch()">
+    <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    <span id="locText">Konum alınıyor...</span>
+    <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-left:auto;opacity:.5"><path d="M19 9l-7 7-7-7"/></svg>
+  </div>
+  <div class="travel-modes">
+    <button class="tm-btn active" id="tm-walk" onclick="setTravelMode('walk')">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>
+      <span>Yürüyüş</span>
+    </button>
+    <button class="tm-btn" id="tm-drive" onclick="setTravelMode('drive')">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+      <span>Araç</span>
+    </button>
+  </div>
 </div>
 
 <div class="sb-search">
@@ -220,6 +241,7 @@ flex-shrink:0;
   <button class="fl-btn" onclick="setFilter(this,'pastane tatlı baklava dondurma dessert')"><span class="fl-icon">🍰</span>Tatlıcı</button>
   <button class="fl-btn" onclick="setFilter(this,'cafe kahve coffee')"><span class="fl-icon">☕</span>Kahveci</button>
   <button class="fl-btn" onclick="setFilter(this,'fine dining restaurant michelin tasting menu gastronomi')"><span class="fl-icon">✨</span>Fine Dining</button>
+  <button class="fl-btn" onclick="setLocalFood()"><span class="fl-icon">🏳️</span>Lokal Yemekler</button>
 </div>
 
 <div class="sb-ai">
@@ -274,8 +296,23 @@ flex-shrink:0;
   <div class="msh"><div class="mh"></div><div class="mb" id="mbody"></div></div>
 </div>
 
-<!-- SETTINGS -->
+<!-- CITY SEARCH -->
 
+<div class="cbg" id="cbg" onclick="cCityOut(event)">
+  <div class="csh">
+    <div class="sh"></div>
+    <div class="s-title">📍 Konum Seç</div>
+    <div class="s-sub">Otomatik konumunu kullan veya şehir ara.</div>
+    <button class="s-save" style="margin-bottom:12px" onclick="useMyLocation()">📡 Mevcut Konumumu Kullan</button>
+    <div class="fl">Şehir veya Ülke Ara</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input class="fi-in" id="cityInput" type="text" placeholder="İstanbul, Paris, Tokyo..." style="margin-bottom:0;flex:1">
+      <button class="s-save" style="width:auto;padding:11px 16px" onclick="searchCity()">Ara</button>
+    </div>
+    <div id="cityResults" style="display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto"></div>
+  </div>
+</div>
+<!-- SETTINGS -->
 <div class="sbg" id="sbg" onclick="cSetOut(event)">
   <div class="ssh">
     <div class="sh"></div>
@@ -330,8 +367,20 @@ function loadMaps(key){
 
 window.mapsReady=function(){
   navigator.geolocation.getCurrentPosition(
-    function(p){userLocation={lat:p.coords.latitude,lng:p.coords.longitude};document.getElementById('locText').textContent='Konumunuz bulundu';initMap();search('');},
-    function(){userLocation={lat:41.0082,lng:28.9784};document.getElementById('locText').textContent='İstanbul (varsayılan)';initMap();search('');}
+    function(p){
+      userLocation={lat:p.coords.latitude,lng:p.coords.longitude};
+      document.getElementById('locText').textContent='Konum bulundu...';
+      initMap();
+      reverseGeocode(userLocation);
+      search('');
+    },
+    function(){
+      userLocation={lat:41.0082,lng:28.9784};
+      currentCountry='TR';
+      document.getElementById('locText').textContent='İstanbul (varsayılan)';
+      initMap();
+      search('');
+    }
   );
 };
 
@@ -369,8 +418,8 @@ function search(kw){
   var searchType = 'restaurant';
   if(kw==='cafe kahve coffee') searchType = 'cafe';
   if(kw==='pastane tatlı baklava dondurma dessert') searchType = 'bakery';
-  var searchRadius = 2000;
-  if(kw.indexOf('fine dining')!==-1) searchRadius = 5000;
+  var searchRadius = travelMode==='drive' ? 8000 : 1500;
+  if(kw.indexOf('fine dining')!==-1) searchRadius = travelMode==='drive'?15000:5000;
   placesService.nearbySearch({location:userLocation,radius:searchRadius,type:searchType,language:'tr',keyword:kw},function(res,st){
     if(st===google.maps.places.PlacesServiceStatus.OK&&res.length){
       realPlaces=res.slice(0,8);renderCards(realPlaces);addMarkers(realPlaces);aiAnalyze(realPlaces,kw);
@@ -427,8 +476,41 @@ async function aiAnalyze(places,kw){
       ' | '+(p.vicinity||'');
   }).join('\n');
 
-  var sysPrompt='Sen Sofra AI adli uzman bir Turk restoran kritigi ve yemek yazarisin.'
-    +' Zomato Turkiye, TripAdvisor Turkiye ve Google Maps yorumlarindan edindign bilgileri sentezleyerek derin analiz yapiyorsun.'
+  var reviewSites = {
+    'TR':'Zomato Turkiye, TripAdvisor Turkiye ve Google Maps',
+    'JP':'Tabelog, Gurunavi ve TripAdvisor Japan',
+    'FR':'Le Fooding, LaFourchette ve TripAdvisor France',
+    'IT':'TheFork, TripAdvisor Italia ve Gambero Rosso',
+    'US':'Yelp, Eater ve OpenTable',
+    'DE':'OpenTable, TripAdvisor Deutschland ve Yelp Germany',
+    'ES':'ElTenedor, TripAdvisor Espana ve Verema',
+    'GR':'TripAdvisor Greece, e-table ve Deliveras',
+    'CN':'Dianping, Meituan ve TripAdvisor China',
+    'KR':'Naver Map, Kakao Map ve TripAdvisor Korea',
+    'NL':'Iens, TripAdvisor Nederland ve OpenTable',
+    'SE':'The Fork Sweden, TripAdvisor Sverige ve Restaurangguiden',
+    'NO':'Aperitif, TripAdvisor Norge ve Matoppskrift',
+    'DK':'The Fork Denmark, TripAdvisor Danmark ve Spisested',
+    'RU':'Afisha.Eda, TripAdvisor Russia ve Yandex Eda',
+    'EG':'Zomato Egypt, TripAdvisor Egypt ve Otlob',
+    'ZA':'Eat Out South Africa, TripAdvisor South Africa ve Zomato SA',
+    'AT':'Falstaff, TripAdvisor Oesterreich ve Gastroguide',
+    'CH':'GaultMillau, TripAdvisor Schweiz ve Restaurants.ch',
+    'AU':'Zomato Australia, TripAdvisor Australia ve Broadsheet',
+    'PT':'Zomato Portugal, TripAdvisor Portugal ve Fugas',
+    'BR':'TripAdvisor Brasil, Zomato Brasil ve iFood',
+    'AR':'TripAdvisor Argentina, Zomato Argentina ve PedidosYa',
+    'SA':'Zomato Saudi, TripAdvisor Saudi Arabia ve Jahez',
+    'IL':'TripAdvisor Israel, Rest ve Zomato Israel',
+    'SG':'Burpple, TripAdvisor Singapore ve HungryGoWhere',
+    'MY':'Zomato Malaysia, TripAdvisor Malaysia ve FoodAdvisor',
+    'ID':'Zomato Indonesia, TripAdvisor Indonesia ve GoFood',
+    'PH':'Zomato Philippines, TripAdvisor Philippines ve Booky',
+    'AE':'Zomato UAE, TripAdvisor UAE ve Talabat',
+  };
+  var sites = reviewSites[currentCountry] || ('TripAdvisor, Yelp ve Google Maps - '+currentCountry+' bolumu');
+  var sysPrompt='Sen Sofra AI adli uzman bir dunya mutfaklari kritigi ve yemek yazarisin.'
+    +' '+sites+' yorumlarindan edindign bilgileri sentezleyerek derin analiz yapiyorsun.'
     +' Kullanici "'+( kw||'genel restoran')+'" aradı.'
     +'\n\nGoogle Maps gercek verileri:\n'+list
     +'\n\nGorevler:'
@@ -506,6 +588,119 @@ function saveKeys(){
   showToast('✦ Kaydedildi, yeniden başlatılıyor...');
   setTimeout(function(){location.reload();},1200);
 }
+
+// Travel mode
+var travelMode = 'walk'; // walk=1500m, drive=5000m
+function setTravelMode(mode){
+  travelMode = mode;
+  document.querySelectorAll('.tm-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tm-'+mode).classList.add('active');
+  if(placesService) search(document.querySelector('.fl-btn.on')?.dataset?.kw || '');
+}
+
+// City search
+var currentCountry = 'TR';
+function openCitySearch(){
+  document.getElementById('cbg').classList.add('open');
+  document.getElementById('cityResults').innerHTML='';
+}
+function cCityOut(e){if(e.target===document.getElementById('cbg'))document.getElementById('cbg').classList.remove('open');}
+function useMyLocation(){
+  document.getElementById('cbg').classList.remove('open');
+  navigator.geolocation.getCurrentPosition(function(p){
+    userLocation={lat:p.coords.latitude,lng:p.coords.longitude};
+    reverseGeocode(userLocation);
+    if(googleMap) googleMap.setCenter(userLocation);
+    if(placesService) search('');
+  });
+}
+function reverseGeocode(loc){
+  var gc=new google.maps.Geocoder();
+  gc.geocode({location:loc,language:'tr'},function(res,st){
+    if(st==='OK'&&res[0]){
+      var addr=res[0].address_components;
+      var city=addr.find(function(a){return a.types.includes('locality');});
+      var country=addr.find(function(a){return a.types.includes('country');});
+      currentCountry = country?country.short_name:'TR';
+      document.getElementById('locText').textContent=(city?city.long_name:'')+(country?' · '+country.long_name:'');
+    }
+  });
+}
+function searchCity(){
+  var q=document.getElementById('cityInput').value.trim();
+  if(!q)return;
+  var gc=new google.maps.Geocoder();
+  gc.geocode({address:q,language:'tr'},function(res,st){
+    if(st==='OK'&&res.length){
+      var html=res.slice(0,5).map(function(r,i){
+        return '<div class="city-result" onclick="selectCity('+i+')">'+r.formatted_address+'</div>';
+      }).join('');
+      document.getElementById('cityResults').innerHTML=html;
+      window._cityResults=res;
+    } else {
+      document.getElementById('cityResults').innerHTML='<div style="color:rgba(237,232,223,.4);font-size:13px">Sonuç bulunamadı</div>';
+    }
+  });
+}
+function selectCity(i){
+  var r=window._cityResults[i];
+  userLocation={lat:r.geometry.location.lat(),lng:r.geometry.location.lng()};
+  var addr=r.address_components;
+  var country=addr.find(function(a){return a.types.includes('country');});
+  currentCountry=country?country.short_name:'TR';
+  document.getElementById('locText').textContent=r.formatted_address;
+  document.getElementById('cbg').classList.remove('open');
+  if(googleMap) googleMap.setCenter(userLocation);
+  if(placesService){placesService=new google.maps.places.PlacesService(googleMap);search('');}
+}
+
+// Local food
+var localFoodMap = {
+  'TR':'döner kebap pide lahmacun meze balık',
+  'JP':'sushi ramen soba tempura yakitori',
+  'IT':'pizza pasta risotto tiramisu',
+  'FR':'brasserie bistro croissant fromage',
+  'MX':'taco burrito enchilada guacamole',
+  'IN':'curry biryani tandoor masala',
+  'CN':'dim sum peking duck hotpot dumpling',
+  'TH':'pad thai tom yum green curry',
+  'GR':'souvlaki gyros moussaka mezze',
+  'ES':'tapas paella churros pintxos',
+  'US':'bbq burger steakhouse brunch',
+  'DE':'schnitzel bratwurst pretzels beer',
+  'KR':'bibimbap bulgogi kimchi korean bbq',
+  'VN':'pho banh mi spring rolls',
+  'MA':'tagine couscous mint tea',
+  'LB':'hummus falafel shawarma mezze',
+  'NL':'stamppot herring stroopwafel bitterballen erwtensoep',
+  'SE':'smorgasbord meatballs gravlax husmanskost kanelbulle',
+  'NO':'rakfisk lefse brunost fiskekaker kjottkaker',
+  'DK':'smorrebrod frikadeller aebleskiver danish pastry',
+  'RU':'borscht pelmeni blini beef stroganoff solyanka',
+  'EG':'koshari ful medames molokhia kofta feteer',
+  'ZA':'braai boerewors biltong potjiekos bunny chow',
+  'AT':'wiener schnitzel apfelstrudel kaiserschmarrn tafelspitz',
+  'CH':'fondue raclette rosti birchermuesli zopf',
+  'AU':'meat pie barramundi pavlova lamington vegemite',
+  'PT':'bacalhau pasteis de nata piri piri caldo verde',
+  'BR':'churrasco feijoada coxinha brigadeiro pao de queijo',
+  'AR':'asado empanada chimichurri dulce de leche medialunas',
+  'SA':'kabsa mandi jareesh mutabbaq saleeg',
+  'IL':'hummus shakshuka falafel sabich knafeh',
+  'SG':'hainanese chicken rice laksa chili crab char kway teow',
+  'MY':'nasi lemak char kway teow satay roti canai',
+  'ID':'nasi goreng rendang gado gado sate soto',
+  'PH':'adobo sinigang lechon kare kare halo halo',
+  'AE':'shawarma hummus machboos luqaimat al harees',
+};
+function setLocalFood(){
+  document.querySelectorAll('.fl-btn').forEach(function(b){b.classList.remove('on');});
+  event.target.closest('.fl-btn').classList.add('on');
+  var kw=localFoodMap[currentCountry]||'yerel geleneksel yemek';
+  if(placesService) search(kw);
+  showToast('🏳️ '+currentCountry+' için lokal yemekler aranıyor...');
+}
+
 var tt;function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show');},2500);}
 document.getElementById('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
 </script>
